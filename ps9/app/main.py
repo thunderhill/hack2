@@ -1,3 +1,13 @@
+import os, ssl, warnings
+
+# ── SSL bypass — MUST be before any other import ─────────────────────────────
+os.environ["PYTHONHTTPSVERIFY"] = "0"
+os.environ["REQUESTS_CA_BUNDLE"] = ""
+os.environ["CURL_CA_BUNDLE"] = ""
+ssl._create_default_https_context = ssl._create_unverified_context
+warnings.filterwarnings("ignore", message="Unverified HTTPS request")
+
+# ── Path setup ────────────────────────────────────────────────────────────────
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -5,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 import streamlit as st
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 st.set_page_config(page_title="Expense Report Summarizer", page_icon="💼", layout="wide")
 st.title("💼 Travel Expense Report Summarizer")
