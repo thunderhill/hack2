@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from infra_explainer.agent import explain_change
 from infra_explainer.config import MODEL_OPTIONS
+from infra_explainer.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Infrastructure Change Explainer")
@@ -36,8 +37,16 @@ def explain_infra_change(change_request: str, model_key: str = "gpt-4o-mini", en
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         environment: Target environment (e.g., Production, Staging)
     """
-    result = explain_change(change_request, model_key, environment)
+    guard = run_input_guardrails(change_request)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = explain_change(guard.sanitized_input, model_key, environment)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(change_request, result_dict, model_key)
     return result_dict
 

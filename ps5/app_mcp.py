@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from infra_explainer.agent import explain_change
 from infra_explainer.config import MODEL_OPTIONS
+from infra_explainer.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("infra_explainer")
@@ -84,10 +85,32 @@ Plan: 0 to add, 2 to change, 0 to destroy."""
     )
 
     if st.button("Explain & Assess Change", type="primary") and change_input.strip():
-        with st.spinner("Analyzing infrastructure change..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(change_input)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Analyzing infrastructure change..."):
             try:
                 result = explain_change(change_input, model_key, environment)
                 result_dict = result.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(result)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(change_input, result_dict, model_key)

@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from build_failure.agent import diagnose_build
 from build_failure.config import MODEL_OPTIONS
+from build_failure.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("build_failure")
@@ -65,10 +66,32 @@ with tab_analyze:
     )
 
     if st.button("Diagnose Build Failure", type="primary") and build_output.strip():
-        with st.spinner("Diagnosing build failure..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(build_output)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Diagnosing build failure..."):
             try:
                 result = diagnose_build(build_output, model_key, language_hint)
                 result_dict = result.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(result)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(build_output, result_dict, model_key)

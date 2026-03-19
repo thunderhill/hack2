@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from pipeline_anomaly.agent import explain_anomaly
 from pipeline_anomaly.config import MODEL_OPTIONS
+from pipeline_anomaly.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Pipeline Anomaly Explainer")
@@ -35,8 +36,21 @@ def analyze_pipeline_anomaly(log_snippet: str, model_key: str = "gpt-4o-mini") -
         log_snippet: The pipeline log text to analyze
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
     """
-    result = explain_anomaly(log_snippet, model_key)
+    # Input guardrails
+    guard = run_input_guardrails(log_snippet)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = explain_anomaly(guard.sanitized_input, model_key)
     result_dict = result.model_dump()
+
+    # Output guardrails
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {
+        "input": guard.model_dump(),
+        "output": out_guard.model_dump(),
+    }
+
     store.add(log_snippet, result_dict, model_key)
     return result_dict
 

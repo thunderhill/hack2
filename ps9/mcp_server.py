@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from expense_report.agent import summarize_expenses
 from expense_report.config import MODEL_OPTIONS
+from expense_report.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Travel Expense Report Summarizer")
@@ -36,8 +37,16 @@ def summarize_travel_expenses(expense_data: str, model_key: str = "gpt-4o-mini",
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         company_policy_notes: Optional additional company policy notes
     """
-    result = summarize_expenses(expense_data, model_key, company_policy_notes)
+    guard = run_input_guardrails(expense_data)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = summarize_expenses(guard.sanitized_input, model_key, company_policy_notes)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(expense_data, result_dict, model_key)
     return result_dict
 

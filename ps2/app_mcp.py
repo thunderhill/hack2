@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from pipeline_anomaly.agent import explain_anomaly
 from pipeline_anomaly.config import MODEL_OPTIONS
+from pipeline_anomaly.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("pipeline_anomaly")
@@ -61,36 +62,58 @@ with tab_analyze:
     )
 
     if st.button("Analyze Anomaly", type="primary") and log_input.strip():
-        with st.spinner("Analyzing pipeline log via MCP agent..."):
-            try:
-                result = explain_anomaly(log_input, model_key)
-                result_dict = result.model_dump()
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(log_input)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
 
-                # Store in ChromaDB
-                store.add(log_input, result_dict, model_key)
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+            with st.spinner("Analyzing pipeline log via MCP agent..."):
+                try:
+                    result = explain_anomaly(log_input, model_key)
+                    result_dict = result.model_dump()
 
-                col1, col2, col3 = st.columns(3)
-                col1.metric("Anomaly Type", result.anomaly_type)
-                col2.metric("Severity", result.severity.upper())
-                col3.metric("Affected Stage", result.affected_stage)
+                    # ── Output Guardrails ────────────────────────────────
+                    out_guard = run_output_guardrails(result)
+                    if out_guard.warnings:
+                        with st.expander("Output Guardrail Warnings"):
+                            for w in out_guard.warnings:
+                                st.warning(w)
 
-                st.subheader("Plain English Summary")
-                st.info(result.plain_english_summary)
+                    # Store in ChromaDB
+                    store.add(log_input, result_dict, model_key)
 
-                st.subheader("Root Cause")
-                st.error(result.root_cause)
+                    col1, col2, col3 = st.columns(3)
+                    col1.metric("Anomaly Type", result.anomaly_type)
+                    col2.metric("Severity", result.severity.upper())
+                    col3.metric("Affected Stage", result.affected_stage)
 
-                col_a, col_b = st.columns(2)
-                with col_a:
-                    st.subheader("Remediation Steps")
-                    for i, step in enumerate(result.remediation_steps, 1):
-                        st.write(f"{i}. {step}")
-                with col_b:
-                    st.subheader("Prevention Tips")
-                    for tip in result.prevention_tips:
-                        st.write(f"• {tip}")
-            except Exception as e:
-                st.error(f"Analysis failed: {e}")
+                    st.subheader("Plain English Summary")
+                    st.info(result.plain_english_summary)
+
+                    st.subheader("Root Cause")
+                    st.error(result.root_cause)
+
+                    col_a, col_b = st.columns(2)
+                    with col_a:
+                        st.subheader("Remediation Steps")
+                        for i, step in enumerate(result.remediation_steps, 1):
+                            st.write(f"{i}. {step}")
+                    with col_b:
+                        st.subheader("Prevention Tips")
+                        for tip in result.prevention_tips:
+                            st.write(f"• {tip}")
+                except Exception as e:
+                    st.error(f"Analysis failed: {e}")
 
 # ── History Tab ──────────────────────────────────────────────────────────────
 with tab_history:

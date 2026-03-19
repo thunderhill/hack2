@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from quality_inspection.agent import generate_inspection_report
 from quality_inspection.config import MODEL_OPTIONS
+from quality_inspection.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Manufacturing Quality Inspection")
@@ -36,8 +37,16 @@ def inspect_manufacturing_quality(inspection_data: str, model_key: str = "gpt-4o
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         product_type: Optional product type for context (e.g., Automotive brake pad)
     """
-    result = generate_inspection_report(inspection_data, model_key, product_type)
+    guard = run_input_guardrails(inspection_data)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = generate_inspection_report(guard.sanitized_input, model_key, product_type)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(inspection_data, result_dict, model_key)
     return result_dict
 

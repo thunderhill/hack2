@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from quality_inspection.agent import generate_inspection_report
 from quality_inspection.config import MODEL_OPTIONS
+from quality_inspection.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("quality_inspection")
@@ -64,10 +65,32 @@ Observations:
     )
 
     if st.button("Generate Report", type="primary") and inspection_data.strip():
-        with st.spinner("Generating quality inspection report..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(inspection_data)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Generating quality inspection report..."):
             try:
                 report = generate_inspection_report(inspection_data, model_key, product_type)
                 result_dict = report.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(report)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(inspection_data, result_dict, model_key)

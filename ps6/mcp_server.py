@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from capacity_planning.agent import generate_capacity_plan
 from capacity_planning.config import MODEL_OPTIONS
+from capacity_planning.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Capacity Planning Advisor")
@@ -37,8 +38,16 @@ def plan_infrastructure_capacity(metrics_data: str, model_key: str = "gpt-4o-min
         growth_projection: Expected growth projection (e.g., 40% user growth in 6 months)
         sla_requirements: SLA requirements (e.g., 99.9% uptime, <200ms response)
     """
-    result = generate_capacity_plan(metrics_data, model_key, growth_projection, sla_requirements)
+    guard = run_input_guardrails(metrics_data)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = generate_capacity_plan(guard.sanitized_input, model_key, growth_projection, sla_requirements)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(metrics_data, result_dict, model_key)
     return result_dict
 

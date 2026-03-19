@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from incident_report.agent import generate_incident_report
 from incident_report.config import MODEL_OPTIONS
+from incident_report.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("incident_report")
@@ -70,10 +71,32 @@ No runbook existed for connection pool issues."""
     )
 
     if st.button("Generate Incident Report", type="primary") and incident_notes.strip():
-        with st.spinner("Generating post-incident report..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(incident_notes)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Generating post-incident report..."):
             try:
                 report = generate_incident_report(incident_notes, model_key, service_name)
                 result_dict = report.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(report)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(incident_notes, result_dict, model_key)

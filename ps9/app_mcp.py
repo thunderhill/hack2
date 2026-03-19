@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from expense_report.agent import summarize_expenses
 from expense_report.config import MODEL_OPTIONS
+from expense_report.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("expense_report")
@@ -73,10 +74,32 @@ Total claimed: approximately $4,431"""
     )
 
     if st.button("Analyze Expenses", type="primary") and expense_input.strip():
-        with st.spinner("Analyzing expense report via MCP agent..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(expense_input)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Analyzing expense report via MCP agent..."):
             try:
                 summary = summarize_expenses(expense_input, model_key, policy_notes)
                 result_dict = summary.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(summary)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(expense_input, result_dict, model_key)

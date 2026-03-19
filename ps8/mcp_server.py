@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from incident_report.agent import generate_incident_report
 from incident_report.config import MODEL_OPTIONS
+from incident_report.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("DevOps Incident Report Generator")
@@ -36,8 +37,16 @@ def generate_devops_incident_report(incident_notes: str, model_key: str = "gpt-4
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         service_name: Optional service or system name
     """
-    result = generate_incident_report(incident_notes, model_key, service_name)
+    guard = run_input_guardrails(incident_notes)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = generate_incident_report(guard.sanitized_input, model_key, service_name)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(incident_notes, result_dict, model_key)
     return result_dict
 

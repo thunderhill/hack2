@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from travel_itinerary.agent import generate_itinerary
 from travel_itinerary.config import MODEL_OPTIONS
+from travel_itinerary.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Travel Itinerary Generator")
@@ -39,8 +40,17 @@ def generate_travel_itinerary(destination: str, duration_days: int, budget: str,
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         travel_month: Optional travel month (e.g., "April")
     """
+    combined_input = f"Destination: {destination}, Interests: {interests}"
+    guard = run_input_guardrails(combined_input)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
     result = generate_itinerary(destination, duration_days, budget, interests, model_key, travel_month)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     input_text = f"Destination: {destination}, Duration: {duration_days} days, Budget: {budget}, Interests: {interests}"
     store.add(input_text, result_dict, model_key)
     return result_dict

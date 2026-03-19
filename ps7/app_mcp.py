@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from travel_itinerary.agent import generate_itinerary
 from travel_itinerary.config import MODEL_OPTIONS
+from travel_itinerary.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("travel_itinerary")
@@ -51,10 +52,33 @@ with tab_generate:
         interests = st.text_input("Interests *", placeholder="e.g., temples, food, hiking, art museums")
 
     if st.button("Generate Itinerary", type="primary") and destination and interests:
-        with st.spinner(f"Creating your {duration_days}-day {destination} itinerary..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        combined_input = f"Destination: {destination}, Interests: {interests}"
+        guard = run_input_guardrails(combined_input)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner(f"Creating your {duration_days}-day {destination} itinerary..."):
             try:
                 itinerary = generate_itinerary(destination, duration_days, budget, interests, model_key, travel_month)
                 result_dict = itinerary.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(itinerary)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 input_text = f"Destination: {destination}, Duration: {duration_days} days, Budget: {budget}, Interests: {interests}"

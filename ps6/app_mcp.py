@@ -20,6 +20,7 @@ load_dotenv(override=True)
 
 from capacity_planning.agent import generate_capacity_plan
 from capacity_planning.config import MODEL_OPTIONS
+from capacity_planning.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 store = ChromaStore("capacity_planning")
@@ -82,10 +83,32 @@ Total monthly infrastructure cost: $5,480"""
     )
 
     if st.button("Generate Capacity Plan", type="primary") and metrics_input.strip():
-        with st.spinner("Generating capacity plan..."):
+        # ── Input Guardrails ─────────────────────────────────────────
+        guard = run_input_guardrails(metrics_input)
+        with st.expander("Guardrail Checks", expanded=not guard.passed):
+            for check in guard.checks:
+                icon = "✅" if check.passed else "❌"
+                st.write(f"{icon} **{check.name}**: {check.message}")
+            if guard.pii_detected:
+                st.warning(f"PII detected and masked: {', '.join(guard.pii_detected)}")
+            if guard.warnings:
+                for w in guard.warnings:
+                    st.caption(f"⚠️ {w}")
+
+        if guard.blocked:
+            st.error(f"Input blocked: {guard.block_reason}")
+        else:
+          with st.spinner("Generating capacity plan..."):
             try:
                 plan = generate_capacity_plan(metrics_input, model_key, growth_projection, sla_requirements)
                 result_dict = plan.model_dump()
+
+                # ── Output Guardrails ────────────────────────────────
+                out_guard = run_output_guardrails(plan)
+                if out_guard.warnings:
+                    with st.expander("Output Guardrail Warnings"):
+                        for w in out_guard.warnings:
+                            st.warning(w)
 
                 # Store in ChromaDB
                 store.add(metrics_input, result_dict, model_key)

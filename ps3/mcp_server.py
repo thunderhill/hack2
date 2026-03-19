@@ -21,6 +21,7 @@ from mcp.server.fastmcp import FastMCP
 
 from build_failure.agent import diagnose_build
 from build_failure.config import MODEL_OPTIONS
+from build_failure.guardrails import run_input_guardrails, run_output_guardrails
 from chroma_store import ChromaStore
 
 mcp = FastMCP("Build Failure Diagnosis")
@@ -36,8 +37,16 @@ def diagnose_build_failure(build_output: str, model_key: str = "gpt-4o-mini", la
         model_key: LLM model to use (gpt-4o, gpt-4o-mini, gpt-35-turbo)
         language_hint: Optional language/framework hint (e.g. "Java Spring Boot")
     """
-    result = diagnose_build(build_output, model_key, language_hint)
+    guard = run_input_guardrails(build_output)
+    if guard.blocked:
+        return {"error": f"Input blocked by guardrails: {guard.block_reason}", "guardrails": guard.model_dump()}
+
+    result = diagnose_build(guard.sanitized_input, model_key, language_hint)
     result_dict = result.model_dump()
+
+    out_guard = run_output_guardrails(result)
+    result_dict["_guardrails"] = {"input": guard.model_dump(), "output": out_guard.model_dump()}
+
     store.add(build_output, result_dict, model_key)
     return result_dict
 

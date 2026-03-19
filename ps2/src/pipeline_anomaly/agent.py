@@ -2,16 +2,24 @@ import json
 from .config import get_llm_client, get_model
 from .models import AnomalyExplanation
 from .prompts import SYSTEM_PROMPT, build_user_message
+from .guardrails import run_input_guardrails, run_output_guardrails
 
 
 def explain_anomaly(log_snippet: str, model_key: str = "gpt-4o") -> AnomalyExplanation:
+    # ── Input guardrails ─────────────────────────────────────────────────
+    guard = run_input_guardrails(log_snippet)
+    if guard.blocked:
+        raise ValueError(f"Input blocked by guardrails: {guard.block_reason}")
+    sanitized_input = guard.sanitized_input
+
+    # ── LLM call ─────────────────────────────────────────────────────────
     client = get_llm_client()
     deployment = get_model(model_key)
     response = client.chat.completions.create(
         model=deployment,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
-            {"role": "user", "content": build_user_message(log_snippet)},
+            {"role": "user", "content": build_user_message(sanitized_input)},
         ],
         max_tokens=1024,
         temperature=0.1,
@@ -24,4 +32,11 @@ def explain_anomaly(log_snippet: str, model_key: str = "gpt-4o") -> AnomalyExpla
     if raw.endswith("```"):
         raw = raw[:-3]
     data = json.loads(raw)
-    return AnomalyExplanation(**data)
+    result = AnomalyExplanation(**data)
+
+    # ── Output guardrails ────────────────────────────────────────────────
+    out_guard = run_output_guardrails(result)
+    if out_guard.warnings:
+        result._guardrail_warnings = out_guard.warnings  # attach for UI display
+
+    return result
