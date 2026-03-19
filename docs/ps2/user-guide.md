@@ -14,8 +14,8 @@ The Pipeline Anomaly Explainer analyzes CI/CD pipeline logs to identify anomalie
 ## Prerequisites
 
 - Python 3.11 or higher
-- Access to an Azure OpenAI deployment with one of: `gpt-4o`, `gpt-4o-mini`, or `gpt-35-turbo`
-- Azure GenAI API credentials (key + endpoint)
+- Access to the TCS GenAI Lab proxy at `https://genailab.tcs.in` (requires TCS VPN)
+- TCS GenAI Lab API key (provided during hackathon)
 
 ---
 
@@ -31,16 +31,18 @@ pip install -e .
 **2. Create a `.env` file in the `ps2/` directory:**
 
 ```env
-AZURE_GENAI_API_KEY=your_api_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 ```
 
 | Variable | Required | Default |
 |---|---|---|
-| `AZURE_GENAI_API_KEY` | Yes | — |
-| `AZURE_GENAI_ENDPOINT` | No | `https://genailab-maas.services.ai.azure.com` |
-| `AZURE_GENAI_API_VERSION` | No | `2024-08-01-preview` |
+| `OPENAI_API_KEY` | Yes | — |
+| `OPENAI_BASE_URL` | No | `https://genailab.tcs.in` |
+| `PYTHONHTTPSVERIFY` | No | `0` |
 
 ---
 
@@ -58,7 +60,7 @@ The app opens in your browser at `http://localhost:8501`.
 ## Using the Interface
 
 **Sidebar — Settings:**
-- **LLM Model** — Select the Azure OpenAI model to use. `gpt-4o` is the most capable; `gpt-4o-mini` and `gpt-35-turbo` are faster and cheaper.
+- **LLM Model** — Select the LLM model to use. `gpt-4o` is the most capable; `gpt-4o-mini` and `gpt-35-turbo` are faster and cheaper.
 
 **Main Panel:**
 
@@ -105,11 +107,11 @@ Paste raw log output from your CI/CD system. The more complete the log, the bett
 
 ## Troubleshooting
 
-**`AZURE_GENAI_API_KEY is not set in environment`**
-→ Ensure your `.env` file exists in the `ps2/` directory and contains `AZURE_GENAI_API_KEY`.
+**`OPENAI_API_KEY is not set in .env`**
+→ Ensure your `.env` file exists in the `ps2/` directory and contains `OPENAI_API_KEY` and `OPENAI_BASE_URL`. Verify that TCS VPN is active.
 
 **`Analysis failed: ...` (API error)**
-→ Check that your endpoint URL and API key are correct. Verify the deployment name exists in your Azure OpenAI resource.
+→ Check that your `.env` has the correct `OPENAI_API_KEY` and `OPENAI_BASE_URL=https://genailab.tcs.in`. Verify that TCS VPN is active.
 
 **Empty or incomplete results**
 → The log may be too short or ambiguous. Include more context — at minimum, the error message and surrounding lines.

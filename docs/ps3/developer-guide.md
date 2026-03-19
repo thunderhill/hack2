@@ -19,19 +19,19 @@ User (Browser)
 │  src/build_failure/agent.py             │
 │  diagnose_build(output, model, hint)    │
 │  - Builds messages from prompts         │
-│  - Calls Azure OpenAI with parse()      │
+│  - Calls OpenAI with create()            │
 │  - Returns BuildDiagnosis               │
 └──────┬───────────────────┬──────────────┘
        │                   │
        ▼                   ▼
 ┌────────────┐    ┌────────────────────────┐
 │ config.py  │    │ prompts.py             │
-│ AzureOpenAI│    │ SYSTEM_PROMPT          │
+│ OpenAI     │    │ SYSTEM_PROMPT          │
 │ client     │    │ build_user_message()   │
 └────────────┘    └────────────────────────┘
        │
        ▼
-Azure OpenAI API
+TCS GenAI Lab API (genailab.tcs.in)
 (structured output → BuildDiagnosis)
        │
        ▼
@@ -41,7 +41,7 @@ Azure OpenAI API
 └─────────────────────────────────────────┘
 ```
 
-**Data flow:** User pastes build output → UI calls `diagnose_build()` → agent builds prompt (with optional language hint) → Azure OpenAI parses response into `BuildDiagnosis` → UI renders fields.
+**Data flow:** User pastes build output → UI calls `diagnose_build()` → agent builds prompt (with optional language hint) → TCS GenAI Lab API parses response into `BuildDiagnosis` → UI renders fields.
 
 ---
 
@@ -55,7 +55,7 @@ ps3/
 │   └── build_failure/
 │       ├── __init__.py
 │       ├── agent.py               # Single function: diagnose_build()
-│       ├── config.py              # Azure OpenAI client factory + model map
+│       ├── config.py              # OpenAI client factory (TCS proxy) + model map
 │       ├── models.py              # BuildDiagnosis + ErrorLocation Pydantic models
 │       └── prompts.py             # System prompt + user message builder
 └── pyproject.toml                 # Package: build-failure, Python 3.11+
@@ -71,16 +71,25 @@ ps3/
 def diagnose_build(build_output: str, model_key: str = "gpt-4o", language_hint: str = "") -> BuildDiagnosis:
     client = get_llm_client()
     deployment = get_model(model_key)
-    response = client.beta.chat.completions.parse(
+    response = client.chat.completions.create(
         model=deployment,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
             {"role": "user", "content": build_user_message(build_output, language_hint)},
         ],
-        response_format=BuildDiagnosis,
+        max_tokens=1024,
+        temperature=0.1,
     )
-    return response.choices[0].message.parsed
+    raw = response.choices[0].message.content.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    data = json.loads(raw)
+    return BuildDiagnosis(**data)
 ```
+
+Uses `client.chat.completions.create()` with a JSON-only instruction appended to the system prompt. The response is manually parsed from JSON and validated against the Pydantic model. This is required because the TCS GenAI Lab proxy does not support the `.beta.parse()` structured output endpoint.
 
 The `language_hint` parameter is forwarded to `build_user_message()` and prepended to the user prompt when provided. It helps the LLM resolve ambiguous error messages (e.g., a stack trace that could be Java or Kotlin).
 
@@ -133,9 +142,11 @@ source .venv/bin/activate
 pip install -e .
 
 cat > .env << 'EOF'
-AZURE_GENAI_API_KEY=your_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 EOF
 
 streamlit run app/main.py
@@ -198,7 +209,7 @@ error_type: str = Field(
 
 ```python
 import os
-os.environ["AZURE_GENAI_API_KEY"] = "your_key"
+os.environ["OPENAI_API_KEY"] = "your_key"
 
 from build_failure.agent import diagnose_build
 
@@ -232,8 +243,8 @@ mock_diagnosis = BuildDiagnosis(
 
 with patch("build_failure.agent.get_llm_client") as mock_client:
     mock_response = MagicMock()
-    mock_response.choices[0].message.parsed = mock_diagnosis
-    mock_client.return_value.beta.chat.completions.parse.return_value = mock_response
+    mock_response.choices[0].message.content = mock_diagnosis.model_dump_json()
+    mock_client.return_value.chat.completions.create.return_value = mock_response
 
     from build_failure.agent import diagnose_build
     result = diagnose_build("any build output")
@@ -259,8 +270,8 @@ CMD ["streamlit", "run", "app/main.py", "--server.address=0.0.0.0"]
 ```bash
 docker build -t ps3-build-failure .
 docker run -p 8501:8501 \
-  -e AZURE_GENAI_API_KEY=your_key \
-  -e AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com \
+  -e OPENAI_API_KEY=your_key \
+  -e OPENAI_BASE_URL=https://genailab.tcs.in \
   ps3-build-failure
 ```
 
@@ -268,6 +279,6 @@ docker run -p 8501:8501 \
 
 | Variable | Description |
 |---|---|
-| `AZURE_GENAI_API_KEY` | Azure OpenAI API key |
-| `AZURE_GENAI_ENDPOINT` | Azure OpenAI endpoint URL |
-| `AZURE_GENAI_API_VERSION` | API version (default: `2024-08-01-preview`) |
+| `OPENAI_API_KEY` | TCS GenAI Lab API key |
+| `OPENAI_BASE_URL` | TCS GenAI Lab proxy URL |
+| `PYTHONHTTPSVERIFY` | Set to `0` to bypass self-signed cert |

@@ -26,12 +26,12 @@ User (Browser)
        ▼                   ▼
 ┌────────────┐    ┌──────────────────────────────┐
 │ config.py  │    │ prompts.py                   │
-│ AzureOpenAI│    │ SYSTEM_PROMPT (SRE persona,  │
+│ OpenAI     │    │ SYSTEM_PROMPT (SRE persona,  │
 │ client     │    │  Google SRE + ITIL practices)│
 └────────────┘    └──────────────────────────────┘
        │
        ▼
-Azure OpenAI API
+TCS GenAI Lab API (genailab.tcs.in)
 (structured output → IncidentReport)
        │
        ▼
@@ -53,7 +53,7 @@ ps8/
 │   └── incident_report/
 │       ├── __init__.py
 │       ├── agent.py                  # Single function: generate_incident_report()
-│       ├── config.py                 # Azure OpenAI client factory + model map
+│       ├── config.py                 # OpenAI client factory (TCS proxy) + model map
 │       ├── models.py                 # IncidentReport + TimelineEvent + ActionItem
 │       └── prompts.py                # System prompt + user message builder
 └── pyproject.toml                    # Package: incident-report, Python 3.11+
@@ -69,16 +69,25 @@ ps8/
 def generate_incident_report(incident_notes: str, model_key: str = "gpt-4o", service_name: str = "") -> IncidentReport:
     client = get_llm_client()
     deployment = get_model(model_key)
-    response = client.beta.chat.completions.parse(
+    response = client.chat.completions.create(
         model=deployment,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
             {"role": "user", "content": build_user_message(incident_notes, service_name)},
         ],
-        response_format=IncidentReport,
+        max_tokens=1024,
+        temperature=0.1,
     )
-    return response.choices[0].message.parsed
+    raw = response.choices[0].message.content.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    data = json.loads(raw)
+    return IncidentReport(**data)
 ```
+
+Uses `client.chat.completions.create()` with a JSON-only instruction appended to the system prompt. The response is manually parsed from JSON and validated against the Pydantic model. This is required because the TCS GenAI Lab proxy does not support the `.beta.parse()` structured output endpoint.
 
 ### `models.py`
 
@@ -154,9 +163,11 @@ source .venv/bin/activate
 pip install -e .
 
 cat > .env << 'EOF'
-AZURE_GENAI_API_KEY=your_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 EOF
 
 streamlit run app/main.py
@@ -244,7 +255,7 @@ def import_from_pagerduty(incident_id: str, api_token: str) -> str:
 
 ```python
 import os
-os.environ["AZURE_GENAI_API_KEY"] = "your_key"
+os.environ["OPENAI_API_KEY"] = "your_key"
 
 from incident_report.agent import generate_incident_report
 
@@ -294,8 +305,8 @@ mock_report = IncidentReport(
 
 with patch("incident_report.agent.get_llm_client") as mock_client:
     mock_response = MagicMock()
-    mock_response.choices[0].message.parsed = mock_report
-    mock_client.return_value.beta.chat.completions.parse.return_value = mock_response
+    mock_response.choices[0].message.content = mock_report.model_dump_json()
+    mock_client.return_value.chat.completions.create.return_value = mock_response
 
     from incident_report.agent import generate_incident_report
     result = generate_incident_report("any incident notes")
@@ -321,8 +332,8 @@ CMD ["streamlit", "run", "app/main.py", "--server.address=0.0.0.0"]
 ```bash
 docker build -t ps8-incident-report .
 docker run -p 8501:8501 \
-  -e AZURE_GENAI_API_KEY=your_key \
-  -e AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com \
+  -e OPENAI_API_KEY=your_key \
+  -e OPENAI_BASE_URL=https://genailab.tcs.in \
   ps8-incident-report
 ```
 
@@ -330,6 +341,6 @@ docker run -p 8501:8501 \
 
 | Variable | Description |
 |---|---|
-| `AZURE_GENAI_API_KEY` | Azure OpenAI API key |
-| `AZURE_GENAI_ENDPOINT` | Azure OpenAI endpoint URL |
-| `AZURE_GENAI_API_VERSION` | API version (default: `2024-08-01-preview`) |
+| `OPENAI_API_KEY` | TCS GenAI Lab API key |
+| `OPENAI_BASE_URL` | TCS GenAI Lab proxy URL |
+| `PYTHONHTTPSVERIFY` | Set to `0` to bypass self-signed cert |

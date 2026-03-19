@@ -18,19 +18,19 @@ User (Browser)
 │  src/pipeline_anomaly/agent.py          │
 │  explain_anomaly(log_snippet, model_key)│
 │  - Builds messages from prompts         │
-│  - Calls Azure OpenAI with parse()      │
+│  - Calls OpenAI with create()            │
 │  - Returns AnomalyExplanation           │
 └──────┬───────────────────┬──────────────┘
        │                   │
        ▼                   ▼
 ┌────────────┐    ┌────────────────────────┐
 │ config.py  │    │ prompts.py             │
-│ AzureOpenAI│    │ SYSTEM_PROMPT          │
+│ OpenAI     │    │ SYSTEM_PROMPT          │
 │ client     │    │ build_user_message()   │
 └────────────┘    └────────────────────────┘
        │
        ▼
-Azure OpenAI API
+TCS GenAI Lab API (genailab.tcs.in)
 (structured output → AnomalyExplanation)
        │
        ▼
@@ -40,7 +40,7 @@ Azure OpenAI API
 └─────────────────────────────────────────┘
 ```
 
-**Data flow:** User pastes log → UI calls `explain_anomaly()` → agent builds prompt → Azure OpenAI parses response into `AnomalyExplanation` → UI renders fields.
+**Data flow:** User pastes log → UI calls `explain_anomaly()` → agent builds prompt → TCS GenAI Lab API parses response into `AnomalyExplanation` → UI renders fields.
 
 ---
 
@@ -54,7 +54,7 @@ ps2/
 │   └── pipeline_anomaly/
 │       ├── __init__.py
 │       ├── agent.py               # Single function: explain_anomaly()
-│       ├── config.py              # Azure OpenAI client factory + model map
+│       ├── config.py              # OpenAI client factory (TCS proxy) + model map
 │       ├── models.py              # AnomalyExplanation Pydantic model
 │       └── prompts.py             # System prompt + user message builder
 └── pyproject.toml                 # Package metadata (hatchling build)
@@ -72,20 +72,25 @@ Contains a single function:
 def explain_anomaly(log_snippet: str, model_key: str = "gpt-4o") -> AnomalyExplanation:
     client = get_llm_client()
     deployment = get_model(model_key)
-    response = client.beta.chat.completions.parse(
+    response = client.chat.completions.create(
         model=deployment,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
             {"role": "user", "content": build_user_message(log_snippet)},
         ],
-        response_format=AnomalyExplanation,
+        max_tokens=1024,
+        temperature=0.1,
     )
-    return response.choices[0].message.parsed
+    raw = response.choices[0].message.content.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    data = json.loads(raw)
+    return AnomalyExplanation(**data)
 ```
 
-- Uses `client.beta.chat.completions.parse()` — the OpenAI structured output API that guarantees the response conforms to the Pydantic schema.
-- `response_format=AnomalyExplanation` tells the API to return JSON matching the model's fields.
-- Returns a fully validated `AnomalyExplanation` instance directly.
+Uses `client.chat.completions.create()` with a JSON-only instruction appended to the system prompt. The response is manually parsed from JSON and validated against the Pydantic model. This is required because the TCS GenAI Lab proxy does not support the `.beta.parse()` structured output endpoint.
 
 ### `models.py`
 
@@ -117,27 +122,29 @@ The system prompt establishes the LLM's role and analysis approach. The user mes
 
 ```python
 MODEL_OPTIONS = ["gpt-4o", "gpt-4o-mini", "gpt-35-turbo"]
-
 MODEL_DISPLAY_MAP = {
-    "gpt-4o": "genailab-maas-gpt-4o",
-    "gpt-4o-mini": "genailab-maas-gpt-4o-mini",
+    "gpt-4o": "azure/genailab-maas-gpt-4o",
+    "gpt-4o-mini": "azure/genailab-maas-gpt-4o-mini",
     "gpt-35-turbo": "genailab-maas-gpt-35-turbo",
 }
 
 @lru_cache(maxsize=1)
-def _cached_client(api_key: str, endpoint: str, api_version: str) -> AzureOpenAI:
-    return AzureOpenAI(azure_endpoint=endpoint, api_key=api_key, api_version=api_version)
+def _cached_client(api_key: str, base_url: str) -> OpenAI:
+    return OpenAI(
+        api_key=api_key,
+        base_url=base_url.rstrip("/") + "/v1",
+        http_client=httpx.Client(verify=False),
+    )
 
-def get_llm_client() -> AzureOpenAI:
-    api_key = os.environ.get("AZURE_GENAI_API_KEY", "")
+def get_llm_client() -> OpenAI:
+    api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("AZURE_GENAI_API_KEY", "")
+    base_url = os.environ.get("OPENAI_BASE_URL", "https://genailab.tcs.in")
     if not api_key:
-        raise EnvironmentError("AZURE_GENAI_API_KEY is not set in environment.")
-    endpoint = os.environ.get("AZURE_GENAI_ENDPOINT", "https://genailab-maas.services.ai.azure.com")
-    api_version = os.environ.get("AZURE_GENAI_API_VERSION", "2024-08-01-preview")
-    return _cached_client(api_key, endpoint, api_version)
+        raise EnvironmentError("OPENAI_API_KEY is not set in .env")
+    return _cached_client(api_key, base_url)
 ```
 
-The `lru_cache` on `_cached_client` ensures the `AzureOpenAI` client is created once and reused across requests. Environment variables are read at call time (not import time) to support `.env` file loading.
+The `lru_cache` on `_cached_client` ensures the `OpenAI` client is created once and reused. The client uses `httpx.Client(verify=False)` to bypass the TCS proxy's self-signed TLS certificate. Environment variables are read at call time to support `.env` file loading.
 
 ---
 
@@ -156,9 +163,11 @@ pip install -e .
 
 # Create the .env file
 cat > .env << 'EOF'
-AZURE_GENAI_API_KEY=your_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 EOF
 
 # Run the app
@@ -215,7 +224,7 @@ Edit `SYSTEM_PROMPT` in `prompts.py`. The prompt instructs the LLM on how to ana
 
 ```python
 import os
-os.environ["AZURE_GENAI_API_KEY"] = "your_key"
+os.environ["OPENAI_API_KEY"] = "your_key"
 
 from pipeline_anomaly.agent import explain_anomaly
 
@@ -246,8 +255,8 @@ mock_result = AnomalyExplanation(
 
 with patch("pipeline_anomaly.agent.get_llm_client") as mock_client:
     mock_response = MagicMock()
-    mock_response.choices[0].message.parsed = mock_result
-    mock_client.return_value.beta.chat.completions.parse.return_value = mock_response
+    mock_response.choices[0].message.content = mock_result.model_dump_json()
+    mock_client.return_value.chat.completions.create.return_value = mock_response
 
     from pipeline_anomaly.agent import explain_anomaly
     result = explain_anomaly("any log text", "gpt-4o")
@@ -272,8 +281,8 @@ CMD ["streamlit", "run", "app/main.py", "--server.address=0.0.0.0"]
 ```bash
 docker build -t ps2-pipeline-anomaly .
 docker run -p 8501:8501 \
-  -e AZURE_GENAI_API_KEY=your_key \
-  -e AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com \
+  -e OPENAI_API_KEY=your_key \
+  -e OPENAI_BASE_URL=https://genailab.tcs.in \
   ps2-pipeline-anomaly
 ```
 
@@ -284,14 +293,14 @@ docker run -p 8501:8501 \
 3. Set the main file path to `app/main.py`.
 4. Add secrets in the Streamlit Cloud dashboard under **Settings → Secrets**:
    ```toml
-   AZURE_GENAI_API_KEY = "your_key"
-   AZURE_GENAI_ENDPOINT = "https://genailab-maas.services.ai.azure.com"
+   OPENAI_API_KEY = "your_key"
+   OPENAI_BASE_URL = "https://genailab.tcs.in"
    ```
 
 ### Production environment variables
 
 | Variable | Description |
 |---|---|
-| `AZURE_GENAI_API_KEY` | Azure OpenAI API key |
-| `AZURE_GENAI_ENDPOINT` | Azure OpenAI endpoint URL |
-| `AZURE_GENAI_API_VERSION` | API version (default: `2024-08-01-preview`) |
+| `OPENAI_API_KEY` | TCS GenAI Lab API key |
+| `OPENAI_BASE_URL` | TCS GenAI Lab proxy URL |
+| `PYTHONHTTPSVERIFY` | Set to `0` to bypass self-signed cert |

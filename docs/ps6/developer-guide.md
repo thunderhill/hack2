@@ -26,14 +26,14 @@ User (Browser)
        ▼                   ▼
 ┌────────────┐    ┌──────────────────────────────┐
 │ config.py  │    │ prompts.py                   │
-│ AzureOpenAI│    │ SYSTEM_PROMPT                │
+│ OpenAI     │    │ SYSTEM_PROMPT                │
 │ client     │    │ build_user_message()         │
 └────────────┘    │ (combines metrics + growth + │
                   │  SLA into one message)       │
                   └──────────────────────────────┘
        │
        ▼
-Azure OpenAI API (senior infra architect persona)
+TCS GenAI Lab API (genailab.tcs.in)
 (structured output → CapacityPlan)
        │
        ▼
@@ -55,7 +55,7 @@ ps6/
 │   └── capacity_planning/
 │       ├── __init__.py
 │       ├── agent.py                  # Single function: generate_capacity_plan()
-│       ├── config.py                 # Azure OpenAI client factory + model map
+│       ├── config.py                 # OpenAI client factory (TCS proxy) + model map
 │       ├── models.py                 # CapacityPlan + ResourceRecommendation
 │       └── prompts.py                # System prompt + multi-context message builder
 └── pyproject.toml                    # Package: capacity-planning, Python 3.11+
@@ -76,18 +76,25 @@ def generate_capacity_plan(
 ) -> CapacityPlan:
     client = get_llm_client()
     deployment = get_model(model_key)
-    response = client.beta.chat.completions.parse(
+    response = client.chat.completions.create(
         model=deployment,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
             {"role": "user", "content": build_user_message(metrics_data, growth_projection, sla_requirements)},
         ],
-        response_format=CapacityPlan,
+        max_tokens=1024,
+        temperature=0.1,
     )
-    return response.choices[0].message.parsed
+    raw = response.choices[0].message.content.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    data = json.loads(raw)
+    return CapacityPlan(**data)
 ```
 
-This agent accepts three optional context parameters beyond the core metrics — growth projection and SLA requirements are forwarded to the message builder and appended to the metrics block.
+Uses `client.chat.completions.create()` with a JSON-only instruction appended to the system prompt. The response is manually parsed from JSON and validated against the Pydantic model. This is required because the TCS GenAI Lab proxy does not support the `.beta.parse()` structured output endpoint.
 
 ### `models.py`
 
@@ -139,9 +146,11 @@ source .venv/bin/activate
 pip install -e .
 
 cat > .env << 'EOF'
-AZURE_GENAI_API_KEY=your_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 EOF
 
 streamlit run app/main.py
@@ -211,7 +220,7 @@ def render_cost_chart(plan: CapacityPlan):
 
 ```python
 import os
-os.environ["AZURE_GENAI_API_KEY"] = "your_key"
+os.environ["OPENAI_API_KEY"] = "your_key"
 
 from capacity_planning.agent import generate_capacity_plan
 
@@ -260,8 +269,8 @@ mock_plan = CapacityPlan(
 
 with patch("capacity_planning.agent.get_llm_client") as mock_client:
     mock_response = MagicMock()
-    mock_response.choices[0].message.parsed = mock_plan
-    mock_client.return_value.beta.chat.completions.parse.return_value = mock_response
+    mock_response.choices[0].message.content = mock_plan.model_dump_json()
+    mock_client.return_value.chat.completions.create.return_value = mock_response
 
     from capacity_planning.agent import generate_capacity_plan
     result = generate_capacity_plan("any metrics")
@@ -287,8 +296,8 @@ CMD ["streamlit", "run", "app/main.py", "--server.address=0.0.0.0"]
 ```bash
 docker build -t ps6-capacity-planning .
 docker run -p 8501:8501 \
-  -e AZURE_GENAI_API_KEY=your_key \
-  -e AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com \
+  -e OPENAI_API_KEY=your_key \
+  -e OPENAI_BASE_URL=https://genailab.tcs.in \
   ps6-capacity-planning
 ```
 
@@ -296,6 +305,6 @@ docker run -p 8501:8501 \
 
 | Variable | Description |
 |---|---|
-| `AZURE_GENAI_API_KEY` | Azure OpenAI API key |
-| `AZURE_GENAI_ENDPOINT` | Azure OpenAI endpoint URL |
-| `AZURE_GENAI_API_VERSION` | API version (default: `2024-08-01-preview`) |
+| `OPENAI_API_KEY` | TCS GenAI Lab API key |
+| `OPENAI_BASE_URL` | TCS GenAI Lab proxy URL |
+| `PYTHONHTTPSVERIFY` | Set to `0` to bypass self-signed cert |

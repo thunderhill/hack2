@@ -26,12 +26,12 @@ User (Browser)
        ▼                   ▼
 ┌────────────┐    ┌──────────────────────────────┐
 │ config.py  │    │ prompts.py                   │
-│ AzureOpenAI│    │ SYSTEM_PROMPT                │
+│ OpenAI     │    │ SYSTEM_PROMPT                │
 │ client     │    │ build_user_message()         │
 └────────────┘    └──────────────────────────────┘
        │
        ▼
-Azure OpenAI API (expert travel planner persona)
+TCS GenAI Lab API (genailab.tcs.in)
 (structured output → TravelItinerary)
        │
        ▼
@@ -53,7 +53,7 @@ ps7/
 │   └── travel_itinerary/
 │       ├── __init__.py
 │       ├── agent.py                  # Single function: generate_itinerary()
-│       ├── config.py                 # Azure OpenAI client factory + model map
+│       ├── config.py                 # OpenAI client factory (TCS proxy) + model map
 │       ├── models.py                 # TravelItinerary + DayPlan + Activity
 │       └── prompts.py                # System prompt + message builder
 └── pyproject.toml                    # Package: travel-itinerary, Python 3.11+
@@ -76,18 +76,25 @@ def generate_itinerary(
 ) -> TravelItinerary:
     client = get_llm_client()
     deployment = get_model(model_key)
-    response = client.beta.chat.completions.parse(
+    response = client.chat.completions.create(
         model=deployment,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT + "\nRespond ONLY with valid JSON. No markdown, no explanation."},
             {"role": "user", "content": build_user_message(destination, duration_days, budget, interests, travel_month)},
         ],
-        response_format=TravelItinerary,
+        max_tokens=1024,
+        temperature=0.1,
     )
-    return response.choices[0].message.parsed
+    raw = response.choices[0].message.content.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    data = json.loads(raw)
+    return TravelItinerary(**data)
 ```
 
-Unlike other PS projects, `generate_itinerary()` takes structured parameters (not a blob of text), which the message builder formats into a structured prompt. This produces more predictable and specific itineraries than free-form input.
+Uses `client.chat.completions.create()` with a JSON-only instruction appended to the system prompt. The response is manually parsed from JSON and validated against the Pydantic model. This is required because the TCS GenAI Lab proxy does not support the `.beta.parse()` structured output endpoint.
 
 ### `models.py`
 
@@ -155,9 +162,11 @@ source .venv/bin/activate
 pip install -e .
 
 cat > .env << 'EOF'
-AZURE_GENAI_API_KEY=your_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 EOF
 
 streamlit run app/main.py
@@ -231,7 +240,7 @@ def render_day_map(day: DayPlan, geocoded_activities: list[tuple[float, float]])
 
 ```python
 import os
-os.environ["AZURE_GENAI_API_KEY"] = "your_key"
+os.environ["OPENAI_API_KEY"] = "your_key"
 
 from travel_itinerary.agent import generate_itinerary
 
@@ -285,8 +294,8 @@ mock_itinerary = TravelItinerary(
 
 with patch("travel_itinerary.agent.get_llm_client") as mock_client:
     mock_response = MagicMock()
-    mock_response.choices[0].message.parsed = mock_itinerary
-    mock_client.return_value.beta.chat.completions.parse.return_value = mock_response
+    mock_response.choices[0].message.content = mock_itinerary.model_dump_json()
+    mock_client.return_value.chat.completions.create.return_value = mock_response
 
     from travel_itinerary.agent import generate_itinerary
     result = generate_itinerary("Kyoto, Japan", 3, "mid-range", "temples")
@@ -312,8 +321,8 @@ CMD ["streamlit", "run", "app/main.py", "--server.address=0.0.0.0"]
 ```bash
 docker build -t ps7-travel-itinerary .
 docker run -p 8501:8501 \
-  -e AZURE_GENAI_API_KEY=your_key \
-  -e AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com \
+  -e OPENAI_API_KEY=your_key \
+  -e OPENAI_BASE_URL=https://genailab.tcs.in \
   ps7-travel-itinerary
 ```
 
@@ -321,6 +330,6 @@ docker run -p 8501:8501 \
 
 | Variable | Description |
 |---|---|
-| `AZURE_GENAI_API_KEY` | Azure OpenAI API key |
-| `AZURE_GENAI_ENDPOINT` | Azure OpenAI endpoint URL |
-| `AZURE_GENAI_API_VERSION` | API version (default: `2024-08-01-preview`) |
+| `OPENAI_API_KEY` | TCS GenAI Lab API key |
+| `OPENAI_BASE_URL` | TCS GenAI Lab proxy URL |
+| `PYTHONHTTPSVERIFY` | Set to `0` to bypass self-signed cert |

@@ -15,8 +15,8 @@ The Capacity Planning Advisor analyzes your current infrastructure metrics and p
 ## Prerequisites
 
 - Python 3.11 or higher
-- Access to an Azure OpenAI deployment with one of: `gpt-4o`, `gpt-4o-mini`, or `gpt-35-turbo`
-- Azure GenAI API credentials (key + endpoint)
+- Access to the TCS GenAI Lab proxy at `https://genailab.tcs.in` (requires TCS VPN)
+- TCS GenAI Lab API key (provided during hackathon)
 
 ---
 
@@ -32,16 +32,18 @@ pip install -e .
 **2. Create a `.env` file in the `ps6/` directory:**
 
 ```env
-AZURE_GENAI_API_KEY=your_api_key_here
-AZURE_GENAI_ENDPOINT=https://genailab-maas.services.ai.azure.com
-AZURE_GENAI_API_VERSION=2024-08-01-preview
+OPENAI_API_KEY=your-hackathon-api-key-here
+OPENAI_BASE_URL=https://genailab.tcs.in
+PYTHONHTTPSVERIFY=0
+REQUESTS_CA_BUNDLE=
+CURL_CA_BUNDLE=
 ```
 
 | Variable | Required | Default |
 |---|---|---|
-| `AZURE_GENAI_API_KEY` | Yes | — |
-| `AZURE_GENAI_ENDPOINT` | No | `https://genailab-maas.services.ai.azure.com` |
-| `AZURE_GENAI_API_VERSION` | No | `2024-08-01-preview` |
+| `OPENAI_API_KEY` | Yes | — |
+| `OPENAI_BASE_URL` | No | `https://genailab.tcs.in` |
+| `PYTHONHTTPSVERIFY` | No | `0` |
 
 ---
 
@@ -121,11 +123,11 @@ Include current utilization metrics for each resource tier:
 
 ## Troubleshooting
 
-**`AZURE_GENAI_API_KEY is not set in environment`**
-→ Ensure `.env` exists in the `ps6/` directory with the correct key.
+**`OPENAI_API_KEY is not set in .env`**
+→ Ensure `.env` exists in the `ps6/` directory with `OPENAI_API_KEY` and `OPENAI_BASE_URL` set, and that TCS VPN is active.
 
 **`Planning failed: ...`**
-→ Check Azure credentials and endpoint. Verify the deployment is active.
+→ Check that `.env` has the correct `OPENAI_API_KEY` and `OPENAI_BASE_URL=https://genailab.tcs.in`, and that TCS VPN is active.
 
 **Recommendations seem too aggressive**
 → If you have conservative SLA requirements or budget constraints, add them to the "SLA Requirements" sidebar field.
