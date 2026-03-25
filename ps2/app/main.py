@@ -21,11 +21,39 @@ st.set_page_config(page_title="Pipeline Anomaly Explainer", page_icon="🔍", la
 st.title("🔍 Pipeline Anomaly Explanation Agent")
 st.caption("Paste a CI/CD pipeline log snippet to get an AI-powered anomaly analysis.")
 
-from pipeline_anomaly.config import MODEL_OPTIONS
+from pipeline_anomaly.config import MODEL_OPTIONS, list_ollama_models
+
+PROVIDER_OPTIONS = ["tcs", "ollama"]
+_DEFAULT_PROVIDER = os.environ.get("LLM_PROVIDER", "tcs")
+
+
+@st.cache_data(ttl=60)
+def _cached_ollama_models() -> list[str]:
+    """Thin Streamlit-cached wrapper around config.list_ollama_models()."""
+    return list_ollama_models()
+
 
 with st.sidebar:
     st.header("Settings")
-    model_key = st.selectbox("LLM Model", MODEL_OPTIONS)
+
+    provider = st.selectbox(
+        "LLM Provider",
+        PROVIDER_OPTIONS,
+        index=PROVIDER_OPTIONS.index(_DEFAULT_PROVIDER) if _DEFAULT_PROVIDER in PROVIDER_OPTIONS else 0,
+    )
+
+    if provider == "tcs":
+        model_key = st.selectbox("Model", MODEL_OPTIONS)
+        ollama_unavailable = False
+    else:
+        ollama_models = _cached_ollama_models()
+        if ollama_models:
+            model_key = st.selectbox("Model", ollama_models)
+            ollama_unavailable = False
+        else:
+            st.warning("Ollama unavailable — is the service running?")
+            model_key = ""
+            ollama_unavailable = True
 
 SAMPLE_LOG = """[2024-03-15 14:23:11] Starting build #1234 for branch: main
 [2024-03-15 14:23:12] Pulling Docker image: node:18-alpine
@@ -46,16 +74,17 @@ log_input = st.text_area(
     placeholder="Paste your pipeline log here...",
 )
 
-if st.button("Analyze Anomaly", type="primary") and log_input.strip():
+if st.button("Analyze Anomaly", type="primary", disabled=ollama_unavailable) and log_input.strip():
     from pipeline_anomaly.agent import explain_anomaly
     with st.spinner("Analyzing pipeline log..."):
         try:
-            result = explain_anomaly(log_input, model_key)
+            result = explain_anomaly(log_input, model_key, provider)
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
             col1.metric("Anomaly Type", result.anomaly_type)
             col2.metric("Severity", result.severity.upper())
             col3.metric("Affected Stage", result.affected_stage)
+            col4.metric("Confidence", f"{result.confidence_level:.0%}")
 
             st.subheader("Plain English Summary")
             st.info(result.plain_english_summary)
