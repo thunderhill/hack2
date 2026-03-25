@@ -95,9 +95,13 @@ def get_llm_client(provider: str = "tcs") -> OpenAI:
     if provider not in PROVIDERS:
         raise ValueError(f"Unknown provider {provider!r}. Options: {list(PROVIDERS)}")
     config = PROVIDERS[provider]
-    api_key = os.environ.get(config.api_key_env) or "ollama"
-    if provider == "tcs" and not api_key:
-        raise EnvironmentError(f"{config.api_key_env} is not set in .env")
+
+    if provider == "tcs":
+        api_key = os.environ.get(config.api_key_env, "")
+        if not api_key:
+            raise EnvironmentError(f"{config.api_key_env} is not set in .env")
+    else:
+        api_key = os.environ.get(config.api_key_env) or "ollama"
 
     # Resolve base URL from env (allows override) and strip accidental /v1 suffix
     if provider == "tcs":

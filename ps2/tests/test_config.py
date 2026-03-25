@@ -74,11 +74,20 @@ def test_get_llm_client_tcs_uses_ssl_bypass(monkeypatch):
     """TCS client is created with verify=False."""
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
     monkeypatch.setenv("OPENAI_BASE_URL", "https://genailab.tcs.in")
+    import httpx
     from pipeline_anomaly import config
-    # Clear cache so monkeypatched env is picked up
     config._cached_client.cache_clear()
-    client = config.get_llm_client("tcs")
-    assert client.base_url is not None
+    captured: list[tuple] = []
+    real_cached = config._cached_client.__wrapped__
+
+    def spy_cached(provider, api_key, base_url):
+        cfg = config.PROVIDERS[provider]
+        captured.append((provider, cfg.ssl_verify))
+        return real_cached(provider, api_key, base_url)
+
+    with patch.object(config, "_cached_client", side_effect=spy_cached):
+        config.get_llm_client("tcs")
+    assert captured == [("tcs", False)]
     config._cached_client.cache_clear()
 
 
@@ -87,11 +96,16 @@ def test_ollama_base_url_strips_trailing_v1(monkeypatch):
     monkeypatch.setenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
     from pipeline_anomaly import config
     config._cached_client.cache_clear()
-    tcs_provider = config.PROVIDERS["ollama"]
-    base = os.environ.get("OLLAMA_BASE_URL", tcs_provider.base_url)
-    # Simulate the stripping logic
-    normalized = base.rstrip("/")
-    if normalized.endswith("/v1"):
-        normalized = normalized[:-3]
-    assert normalized == "http://localhost:11434"
+    captured_base_urls: list[str] = []
+
+    def spy_cached(provider, api_key, base_url):
+        captured_base_urls.append(base_url)
+        return MagicMock()
+
+    with patch.object(config, "_cached_client", side_effect=spy_cached):
+        config.get_llm_client("ollama")
+    assert len(captured_base_urls) == 1
+    # /v1 suffix must be stripped before _cached_client appends its own /v1
+    assert captured_base_urls[0] == "http://localhost:11434"
+    assert captured_base_urls[0].endswith("/v1/v1") is False
     config._cached_client.cache_clear()
