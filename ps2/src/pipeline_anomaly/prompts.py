@@ -5,7 +5,19 @@ Given a pipeline log snippet, you analyze it to:
 3. Pinpoint the root cause
 4. Suggest actionable remediation steps
 
-Be specific and practical. Use the log content to ground your analysis."""
+Be specific and practical. Use the log content to ground your analysis.
+
+Respond ONLY with valid JSON matching this schema (no markdown fences, no extra text):
+{
+  "anomaly_type": "<short label for the failure type>",
+  "plain_english_summary": "<clear explanation for a non-expert>",
+  "root_cause": "<technical root cause>",
+  "affected_stage": "<pipeline stage name>",
+  "severity": "<critical|high|medium|low>",
+  "remediation_steps": ["<step 1>", "<step 2>"],
+  "prevention_tips": ["<tip 1>"],
+  "confidence_level": <float between 0.0 and 1.0 — your confidence in this analysis>
+}"""
 
 
 def build_user_message(log_snippet: str) -> str:
