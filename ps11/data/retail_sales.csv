@@ -1,0 +1,501 @@
+order_id,order_date,product_category,product_name,quantity,unit_price,revenue,region,customer_segment,discount_pct,returned
+ORD-0001,2023-10-07,Electronics,Laptop,5,126.22,,North,Home Office,0.05,0
+ORD-0002,2023-08-03,Books,History,,282.82,212.12,South,Corporate,0.25,0
+ORD-0003,2023-02-22,Clothing,Dress,6,142.55,786.88,North,Corporate,0.08,1
+ORD-0004,2023-05-31,Electronics,Headphones,,66.79,408.75,Central,Corporate,0.32,0
+ORD-0005,2023-08-21,Clothing,Jeans,2,428.38,599.73,East,Consumer,0.3,0
+ORD-0006,2023-05-19,Electronics,Monitor,3,269.4,735.46,Central,Consumer,0.09,0
+ORD-0007,2023-10-18,Clothing,T-Shirt,6,203.58,1197.05,East,Consumer,0.02,0
+ORD-0008,2023-10-27,Sports,Dumbbell,5,74.12,274.24,West,Home Office,0.26,0
+ORD-0009,2023-03-23,Books,Cookbook,2,379.11,530.75,West,Home Office,0.3,1
+ORD-0010,2023-12-16,Books,Novel,9,431.09,3879.81,Central,Corporate,0.0,0
+ORD-0011,2023-09-14,Clothing,Dress,1,477.14,329.23,South,Home Office,0.31,0
+ORD-0012,2023-09-29,Books,History,4,80.66,,North,Home Office,0.27,0
+ORD-0013,2023-09-06,Home & Garden,Table,1,124.23,99.38,North,Home Office,0.2,0
+ORD-0014,2023-10-04,Books,Data Science,5,266.2,1051.49,South,Home Office,0.21,0
+ORD-0015,2023-10-29,Sports,Shoes,8,64.9,,Central,Consumer,0.08,0
+ORD-0016,2023-05-02,Electronics,Phone,2,453.18,634.45,East,Home Office,0.3,0
+ORD-0017,2023-02-18,Books,History,8,125.28,831.86,North,Home Office,0.17,0
+ORD-0018,2023-05-08,Electronics,Laptop,1,204.3,179.78,South,Consumer,0.12,0
+ORD-0019,2023-01-26,Sports,Dumbbell,2,224.35,314.09,Central,Consumer,0.3,0
+ORD-0020,2023-03-26,Clothing,Dress,8,243.27,1362.31,West,Consumer,0.3,0
+ORD-0021,2023-12-05,Sports,Tennis Racket,7,349.81,1812.02,West,Consumer,0.26,0
+ORD-0022,2023-09-29,Books,Python Guide,6,33.3,159.84,South,Consumer,0.2,0
+ORD-0023,2023-10-24,Books,Python Guide,4,204.87,549.05,Central,Consumer,0.33,0
+ORD-0024,2023-07-22,Books,Novel,5,106.11,397.91,South,Home Office,0.25,0
+ORD-0025,2023-10-03,Electronics,Laptop,8,312.47,1999.81,South,Home Office,0.2,0
+ORD-0026,2023-11-10,Clothing,Jeans,5,83.08,294.93,Central,Consumer,0.29,0
+ORD-0027,2023-05-20,Electronics,Phone,5,62.14,298.27,East,Home Office,0.04,0
+ORD-0028,2023-11-21,Home & Garden,Plant,8,129.31,703.45,West,Corporate,0.32,1
+ORD-0029,2023-12-20,Home & Garden,Table,8,278.08,16123.49,South,Home Office,0.15,1
+ORD-0030,2023-01-21,Sports,Dumbbell,1,157.59,108.74,East,Consumer,0.31,0
+ORD-0031,2023-03-25,Books,Cookbook,10,375.99,2556.73,South,Corporate,0.32,1
+ORD-0032,2023-01-20,Sports,Dumbbell,5,83.8,314.25,West,Consumer,0.25,0
+ORD-0033,2023-02-05,Clothing,Jacket,1,331.72,285.28,East,Corporate,0.14,0
+ORD-0034,2023-05-16,Books,Novel,1,62.09,40.98,North,Consumer,0.34,0
+ORD-0035,2023-01-23,Sports,Shoes,9,62.24,386.51,West,Consumer,0.31,0
+ORD-0036,2023-06-10,Clothing,Jeans,7,39.64,213.66,North,Home Office,0.23,0
+ORD-0037,2023-07-14,Home & Garden,Rug,5,279.43,1299.35,South,Home Office,0.07,0
+ORD-0038,2023-08-27,Home & Garden,Lamp,4,217.79,696.93,West,Corporate,0.2,0
+ORD-0039,2023-05-01,Clothing,T-Shirt,,260.15,1014.59,East,Consumer,0.22,0
+ORD-0040,2023-12-23,Sports,Shoes,2,230.43,317.99,West,Corporate,0.31,0
+ORD-0041,2023-01-26,Electronics,Headphones,4,92.06,243.04,Central,Consumer,0.34,0
+ORD-0042,2023-11-10,Sports,Shoes,9,299.75,1807.49,Central,Corporate,0.33,0
+ORD-0043,2023-09-24,Sports,Bike Helmet,5,377.13,1338.81,West,Home Office,0.29,0
+ORD-0044,2023-04-29,Clothing,Jeans,6,163.26,793.44,West,Home Office,0.19,0
+ORD-0045,2023-10-27,Home & Garden,Plant,8,210.81,,North,Home Office,0.07,0
+ORD-0046,2023-04-23,Sports,Bike Helmet,9,375.02,2733.9,West,Consumer,0.19,0
+ORD-0047,2023-07-21,Sports,Dumbbell,8,460.17,2429.7,Central,Home Office,0.34,0
+ORD-0048,2023-06-22,Sports,Dumbbell,1,133.78,119.06,West,Corporate,0.11,0
+ORD-0049,2023-04-25,Electronics,Headphones,1,375.77,,North,Home Office,0.02,1
+ORD-0050,2023-04-22,Electronics,Monitor,3,123.08,306.47,West,Home Office,0.17,0
+ORD-0051,2023-12-13,Electronics,Phone,5,58.51,289.62,West,Corporate,0.01,0
+ORD-0052,2023-10-17,Clothing,T-Shirt,5,425.9,1682.31,North,Corporate,0.21,0
+ORD-0053,2023-11-22,Home & Garden,Chair,7,412.05,2768.98,West,Home Office,0.04,0
+ORD-0054,2023-10-31,Home & Garden,Plant,9,388.45,2936.68,East,Corporate,0.16,0
+ORD-0055,2023-09-11,Sports,Dumbbell,8,287.08,1768.41,East,Consumer,0.23,0
+ORD-0056,2023-05-04,Home & Garden,Plant,5,280.12,1148.49,West,Corporate,0.18,0
+ORD-0057,2023-06-06,Sports,Bike Helmet,1,51.06,46.98,Central,Corporate,0.08,0
+ORD-0058,2023-03-03,Books,Novel,6,352.91,1926.89,South,Corporate,0.09,1
+ORD-0059,2023-09-26,Clothing,Jacket,4,370.61,1334.2,Central,Corporate,0.1,0
+ORD-0060,2023-01-28,Home & Garden,Table,5,12.0,48.6,Central,Corporate,0.19,0
+ORD-0061,2023-04-05,Sports,Yoga Mat,1,289.16,242.89,North,Corporate,0.16,0
+ORD-0062,2023-10-16,Sports,Bike Helmet,2,290.63,441.76,East,Consumer,0.24,0
+ORD-0063,2023-08-15,Books,History,10,116.72,957.1,East,Home Office,0.18,0
+ORD-0064,2023-05-03,Books,Python Guide,4,314.63,,South,Home Office,0.09,1
+ORD-0065,2023-08-21,Books,Cookbook,5,21.16,95.22,North,Home Office,0.1,0
+ORD-0066,2023-05-17,Books,Data Science,7,61.81,398.06,South,Consumer,0.08,1
+ORD-0067,2023-05-20,Books,Novel,,66.56,404.68,Central,Home Office,0.24,0
+ORD-0068,2023-10-22,Sports,Tennis Racket,10,128.93,1250.62,Central,Consumer,0.03,0
+ORD-0069,2023-10-27,Electronics,Phone,8,261.89,1780.85,West,Home Office,0.15,0
+ORD-0070,2023-12-22,Sports,Tennis Racket,6,336.72,1414.22,West,Corporate,0.3,0
+ORD-0071,2023-07-26,Electronics,Headphones,2,160.69,286.03,Central,Consumer,0.11,0
+ORD-0072,2023-01-27,Clothing,Shoes,6,313.2,1559.74,South,Corporate,0.17,0
+ORD-0073,2023-03-23,Sports,Yoga Mat,1,486.71,384.5,East,Home Office,0.21,1
+ORD-0074,2023-05-30,Electronics,Headphones,2,325.62,618.68,Central,Home Office,0.05,0
+ORD-0075,2023-03-11,Clothing,Dress,9,76.6,641.14,North,Corporate,0.07,0
+ORD-0076,2023-12-04,Books,Novel,1,145.01,130.51,West,Consumer,0.1,0
+ORD-0077,2023-05-03,Books,Cookbook,,466.76,2613.86,Central,Corporate,0.3,0
+ORD-0078,2023-03-19,Sports,Bike Helmet,7,494.26,2491.07,West,Consumer,0.28,0
+ORD-0079,2023-07-29,Electronics,Headphones,2,265.35,445.79,South,Consumer,0.16,0
+ORD-0080,2023-06-12,Sports,Yoga Mat,6,426.91,1793.02,West,Home Office,0.3,1
+ORD-0081,2023-02-21,Home & Garden,Table,,219.82,426.45,West,Consumer,0.03,0
+ORD-0082,2023-10-17,Electronics,Tablet,6,190.55,1086.14,South,Consumer,0.05,0
+ORD-0083,2023-05-11,Clothing,Dress,10,75.84,637.06,North,Corporate,0.16,0
+ORD-0084,2023-08-22,Sports,Tennis Racket,10,153.08,1010.33,East,Consumer,0.34,0
+ORD-0085,2023-12-04,Sports,Shoes,6,289.53,1129.17,West,Corporate,0.35,1
+ORD-0086,2023-04-28,Electronics,Monitor,8,417.26,2269.89,Central,Corporate,0.32,0
+ORD-0087,2023-03-09,Clothing,T-Shirt,1,157.92,134.23,North,Corporate,0.15,0
+ORD-0088,2023-09-04,Books,Novel,9,253.39,2052.46,East,Home Office,0.1,0
+ORD-0089,2023-10-13,Electronics,Phone,4,430.77,,East,Consumer,0.25,0
+ORD-0090,2023-02-25,Sports,Tennis Racket,5,294.36,1044.98,South,Corporate,0.29,1
+ORD-0091,2023-11-29,Books,Data Science,2,319.52,536.79,West,Consumer,0.16,0
+ORD-0092,2023-07-09,Sports,Yoga Mat,2,121.23,196.39,Central,Corporate,0.19,0
+ORD-0093,2023-07-09,Electronics,Headphones,10,207.02,1387.03,South,Corporate,0.33,0
+ORD-0094,2023-08-21,Home & Garden,Plant,6,34.97,188.84,North,Home Office,0.1,0
+ORD-0095,2023-10-11,Electronics,Tablet,4,494.47,1424.07,South,Home Office,0.28,0
+ORD-0096,2023-10-04,Clothing,Shoes,1,142.25,93.88,East,Consumer,0.34,1
+ORD-0097,2023-08-04,Home & Garden,Table,10,165.27,1553.54,Central,Consumer,0.06,0
+ORD-0098,2023-12-04,Books,History,2,228.74,420.88,Central,Corporate,0.08,0
+ORD-0099,2023-02-07,Sports,Bike Helmet,7,344.62,2002.24,North,Corporate,0.17,0
+ORD-0100,2023-09-16,Books,History,6,193.55,917.43,Central,Corporate,0.21,1
+ORD-0101,2023-08-21,Books,Data Science,7,228.52,1471.67,West,Corporate,0.08,0
+ORD-0102,2023-02-13,Home & Garden,Lamp,3,344.98,859.0,North,Corporate,0.17,1
+ORD-0103,2023-07-30,Books,Python Guide,10,478.53,3828.24,East,Home Office,0.2,0
+ORD-0104,2023-03-21,Electronics,Tablet,10,159.66,1532.74,West,Consumer,0.04,0
+ORD-0105,2023-11-15,Electronics,Tablet,10,116.95,,Central,Home Office,0.15,0
+ORD-0106,2023-06-29,Home & Garden,Chair,3,140.27,307.19,North,Consumer,0.27,0
+ORD-0107,2023-06-24,Clothing,T-Shirt,2,374.33,688.77,South,Corporate,0.08,0
+ORD-0108,2023-02-11,Books,Python Guide,1,82.01,60.69,East,Corporate,0.26,0
+ORD-0109,2023-12-14,Home & Garden,Table,9,61.34,469.25,Central,Corporate,0.15,0
+ORD-0110,2023-05-11,Books,Python Guide,1,106.19,71.15,East,Corporate,0.33,1
+ORD-0111,2023-07-01,Clothing,Dress,,353.32,,North,Corporate,0.18,0
+ORD-0112,2023-05-29,Electronics,Tablet,10,217.5,1870.5,North,Corporate,0.14,1
+ORD-0113,2023-10-29,Books,Cookbook,6,48.62,204.2,West,Home Office,0.3,1
+ORD-0114,2023-04-10,Clothing,Jeans,3,42.81,100.18,East,Corporate,0.22,0
+ORD-0115,2023-12-02,Clothing,T-Shirt,3,131.7,371.39,North,Consumer,0.06,0
+ORD-0116,2023-11-16,Books,History,8,342.16,1888.72,East,Home Office,0.31,0
+ORD-0117,2023-08-20,Home & Garden,Lamp,10,32.81,269.04,North,Consumer,0.18,0
+ORD-0118,2023-01-22,Electronics,Monitor,10,256.0,2150.4,West,Home Office,0.16,0
+ORD-0119,2023-02-13,Clothing,T-Shirt,8,56.23,310.39,Central,Home Office,0.31,0
+ORD-0120,2023-07-18,Sports,Shoes,9,306.85,2402.64,West,Corporate,0.13,0
+ORD-0121,2023-12-03,Home & Garden,Chair,6,51.78,236.12,Central,Consumer,0.24,0
+ORD-0122,2023-10-14,Home & Garden,Lamp,7,68.83,361.36,West,Home Office,0.25,0
+ORD-0123,2023-04-20,Books,Python Guide,7,256.7,1778.93,East,Corporate,0.01,0
+ORD-0124,2023-01-20,Home & Garden,Chair,9,386.58,2470.25,East,Home Office,0.29,0
+ORD-0125,2023-08-16,Books,Data Science,8,26.63,185.34,Central,Corporate,0.13,0
+ORD-0126,2023-10-20,Clothing,Jeans,8,452.47,3366.38,West,Corporate,0.07,0
+ORD-0127,2023-11-25,Sports,Dumbbell,4,401.62,1526.16,West,Corporate,0.05,0
+ORD-0128,2023-03-17,Electronics,Tablet,2,382.74,688.93,West,Consumer,0.1,0
+ORD-0129,2023-02-11,Home & Garden,Chair,7,31.36,180.01,East,Consumer,0.18,1
+ORD-0130,2023-03-13,Home & Garden,Table,,23.96,48.88,West,Corporate,0.32,0
+ORD-0131,2023-05-28,Clothing,Jacket,9,470.41,3344.62,South,Corporate,0.21,0
+ORD-0132,2023-01-09,Books,Cookbook,2,59.87,81.42,Central,Home Office,0.32,0
+ORD-0133,2023-09-26,Books,Novel,4,287.48,1069.43,East,Consumer,0.07,0
+ORD-0134,2023-07-11,Books,History,1,198.27,166.55,East,Home Office,0.16,1
+ORD-0135,2023-11-26,Electronics,Monitor,6,71.04,375.09,South,Home Office,0.12,0
+ORD-0136,2023-01-22,Clothing,T-Shirt,8,23.31,173.43,East,Corporate,0.07,0
+ORD-0137,2023-12-02,Home & Garden,Chair,4,146.62,410.54,East,Corporate,0.3,0
+ORD-0138,2023-09-23,Sports,Bike Helmet,6,486.99,2425.21,East,Consumer,0.17,0
+ORD-0139,2023-06-06,Clothing,Shoes,5,164.0,795.4,West,Home Office,0.03,0
+ORD-0140,2023-01-30,Sports,Yoga Mat,6,309.35,1577.69,North,Home Office,0.15,0
+ORD-0141,2023-03-06,Clothing,T-Shirt,3,425.09,969.21,North,Consumer,0.24,0
+ORD-0142,2023-08-16,Books,Python Guide,10,80.95,679.98,North,Home Office,0.16,0
+ORD-0143,2023-10-15,Home & Garden,Table,2,17.83,33.16,North,Corporate,0.07,0
+ORD-0144,2023-03-30,Books,Novel,8,104.09,791.08,West,Consumer,0.05,0
+ORD-0145,2023-12-31,Home & Garden,Chair,9,273.37,1697.63,South,Corporate,0.31,0
+ORD-0146,2023-10-10,Clothing,Jacket,8,18.01,116.7,South,Home Office,0.19,0
+ORD-0147,2023-06-12,Sports,Shoes,7,385.74,1917.13,North,Corporate,0.29,0
+ORD-0148,2023-01-29,Books,History,3,385.05,1097.39,North,Home Office,0.05,0
+ORD-0149,2023-11-22,Clothing,Jeans,9,447.99,2822.34,Central,Corporate,0.3,0
+ORD-0150,2023-11-06,Books,Data Science,10,471.1,4475.45,East,Home Office,0.05,1
+ORD-0151,2023-09-12,Books,Novel,4,384.64,1307.78,Central,Corporate,0.15,0
+ORD-0152,2023-09-05,Sports,Tennis Racket,8,41.12,322.38,West,Consumer,0.02,0
+ORD-0153,2023-06-13,Home & Garden,Lamp,7,69.73,424.66,South,Corporate,0.13,0
+ORD-0154,2023-03-23,Electronics,Tablet,7,432.76,2574.92,East,Home Office,0.15,0
+ORD-0155,2023-07-21,Books,Cookbook,8,440.14,2922.53,Central,Corporate,0.17,0
+ORD-0156,2023-05-27,Electronics,Tablet,8,300.77,1708.37,Central,Consumer,0.29,0
+ORD-0157,2023-07-05,Home & Garden,Rug,6,27.39,161.05,Central,Corporate,0.02,1
+ORD-0158,2023-06-23,Home & Garden,Plant,10,63.81,421.15,Central,Corporate,0.34,0
+ORD-0159,2023-09-23,Books,Python Guide,1,24.26,18.2,West,Consumer,0.25,0
+ORD-0160,2023-10-31,Books,Novel,3,199.51,466.85,East,Home Office,0.22,0
+ORD-0161,2023-10-26,Home & Garden,Rug,1,187.34,142.38,East,Home Office,0.24,0
+ORD-0162,2023-09-26,Home & Garden,Plant,,117.63,1152.77,Central,Corporate,0.02,0
+ORD-0163,2023-04-15,Electronics,Phone,1,223.31,189.81,West,Home Office,0.15,0
+ORD-0164,2023-09-27,Electronics,Phone,9,107.63,862.12,West,Corporate,0.11,0
+ORD-0165,2023-10-13,Books,Novel,5,306.99,1427.5,East,Consumer,0.07,0
+ORD-0166,2023-05-21,Clothing,Dress,6,242.5,1164.0,East,Consumer,0.2,0
+ORD-0167,2023-06-27,Sports,Tennis Racket,3,148.77,401.68,West,Home Office,0.1,0
+ORD-0168,2023-10-28,Books,Novel,9,349.6,2989.08,South,Consumer,0.05,1
+ORD-0169,2023-03-12,Clothing,T-Shirt,2,209.58,314.37,North,Home Office,0.25,0
+ORD-0170,2023-01-31,Sports,Bike Helmet,4,379.18,1365.05,North,Home Office,0.1,0
+ORD-0171,2023-07-23,Electronics,Phone,7,441.71,2906.45,West,Consumer,0.06,0
+ORD-0172,2023-05-26,Electronics,Laptop,5,286.14,1373.47,West,Home Office,0.04,0
+ORD-0173,2023-08-23,Books,Cookbook,5,100.44,482.11,East,Home Office,0.04,0
+ORD-0174,2023-08-07,Books,Data Science,3,307.42,719.36,Central,Corporate,0.22,1
+ORD-0175,2023-08-17,Clothing,Dress,,468.23,2809.38,East,Corporate,0.0,0
+ORD-0176,2023-12-18,Home & Garden,Table,1,335.55,281.86,Central,Home Office,0.16,0
+ORD-0177,2023-08-21,Home & Garden,Lamp,10,114.32,754.51,Central,Corporate,0.34,0
+ORD-0178,2023-09-27,Books,Data Science,4,341.77,1079.99,West,Home Office,0.21,0
+ORD-0179,2023-09-24,Electronics,Monitor,9,105.07,765.96,West,Consumer,0.19,0
+ORD-0180,2023-01-30,Books,Cookbook,,229.45,188.15,Central,Corporate,0.18,0
+ORD-0181,2023-02-02,Home & Garden,Chair,4,291.26,1141.74,Central,Consumer,0.02,0
+ORD-0182,2023-11-27,Electronics,Tablet,7,94.09,625.7,West,Corporate,0.05,0
+ORD-0183,2023-12-01,Sports,Bike Helmet,2,342.95,528.14,East,Consumer,0.23,0
+ORD-0184,2023-08-06,Clothing,T-Shirt,1,489.35,411.05,Central,Corporate,0.16,0
+ORD-0185,2023-01-09,Home & Garden,Table,2,20.95,32.26,South,Consumer,0.23,1
+ORD-0186,2023-01-29,Electronics,Phone,1,204.12,187.79,South,Home Office,0.08,0
+ORD-0187,2023-06-04,Books,Novel,10,300.97,2287.37,South,Home Office,0.24,0
+ORD-0188,2023-06-26,Books,History,3,314.87,802.92,West,Home Office,0.15,0
+ORD-0189,2023-12-29,Sports,Dumbbell,9,239.39,1508.16,South,Corporate,0.3,0
+ORD-0190,2023-02-10,Books,History,3,197.27,538.55,West,Corporate,0.09,1
+ORD-0191,2023-10-28,Home & Garden,Rug,10,303.45,2093.8,Central,Consumer,0.31,0
+ORD-0192,2023-09-03,Electronics,Phone,4,481.23,1847.92,South,Home Office,0.04,0
+ORD-0193,2023-05-14,Books,Novel,5,193.43,783.39,East,Home Office,0.19,0
+ORD-0194,2023-04-24,Sports,Tennis Racket,4,188.5,648.44,South,Consumer,0.14,0
+ORD-0195,2023-05-06,Sports,Tennis Racket,3,102.11,281.82,West,Home Office,0.08,0
+ORD-0196,2023-10-07,Sports,Bike Helmet,8,88.28,508.49,West,Consumer,0.28,0
+ORD-0197,2023-01-25,Electronics,Monitor,1,420.34,407.73,North,Corporate,0.03,0
+ORD-0198,2023-12-08,Clothing,T-Shirt,4,255.34,,Central,Corporate,0.13,0
+ORD-0199,2023-01-09,Sports,Yoga Mat,1,267.06,240.35,Central,Home Office,0.1,0
+ORD-0200,2023-07-01,Electronics,Laptop,9,78.7,658.72,East,Corporate,0.07,1
+ORD-0201,2023-11-29,Clothing,Jacket,5,343.6,1202.6,North,Consumer,0.3,0
+ORD-0202,2023-10-17,Electronics,Phone,2,252.43,429.13,North,Home Office,0.15,0
+ORD-0203,2023-10-06,Books,Cookbook,5,28.05,136.04,Central,Home Office,0.03,1
+ORD-0204,2023-02-09,Clothing,Shoes,3,377.37,849.08,East,Consumer,0.25,0
+ORD-0205,2023-02-10,Books,Novel,7,379.03,2520.55,Central,Home Office,0.05,0
+ORD-0206,2023-06-17,Electronics,Tablet,10,385.66,2583.92,North,Home Office,0.33,0
+ORD-0207,2023-02-13,Home & Garden,Plant,7,218.76,1163.8,Central,Corporate,0.24,0
+ORD-0208,2023-01-03,Clothing,Dress,3,371.13,990.92,East,Corporate,0.11,0
+ORD-0209,2023-02-15,Clothing,Dress,8,280.71,1841.46,East,Home Office,0.18,1
+ORD-0210,2023-10-14,Sports,Yoga Mat,5,209.84,765.92,South,Home Office,0.27,0
+ORD-0211,2023-08-04,Home & Garden,Lamp,5,249.1,1220.59,East,Corporate,0.02,0
+ORD-0212,2023-07-22,Sports,Shoes,10,101.8,977.28,East,Home Office,0.04,0
+ORD-0213,2023-09-03,Sports,Shoes,3,153.72,364.32,East,Consumer,0.21,0
+ORD-0214,2023-07-06,Sports,Shoes,4,166.31,598.72,North,Home Office,0.1,0
+ORD-0215,2023-12-21,Books,Python Guide,8,471.77,3509.97,North,Corporate,0.07,0
+ORD-0216,2023-09-03,Home & Garden,Table,7,395.59,2686.06,Central,Corporate,0.03,0
+ORD-0217,2023-10-02,Sports,Shoes,1,396.41,344.88,Central,Home Office,0.13,0
+ORD-0218,2023-07-24,Home & Garden,Table,10,26.93,177.74,East,Corporate,0.34,1
+ORD-0219,2023-08-26,Books,History,,345.39,3177.59,Central,Home Office,0.08,0
+ORD-0220,2023-03-14,Electronics,Tablet,7,460.67,3127.95,East,Corporate,0.03,0
+ORD-0221,2023-06-03,Home & Garden,Rug,2,221.89,337.27,North,Home Office,0.24,1
+ORD-0222,2023-08-25,Clothing,Jacket,9,91.35,772.82,South,Corporate,0.06,0
+ORD-0223,2023-01-03,Sports,Yoga Mat,10,442.13,3713.89,South,Consumer,0.16,0
+ORD-0224,2023-05-15,Books,Python Guide,9,97.55,781.38,West,Home Office,0.11,0
+ORD-0225,2023-12-11,Sports,Shoes,2,177.22,248.11,East,Home Office,0.3,0
+ORD-0226,2023-08-03,Clothing,Jeans,2,95.61,145.33,Central,Consumer,0.24,0
+ORD-0227,2023-08-19,Books,Data Science,9,87.6,709.56,Central,Consumer,0.1,0
+ORD-0228,2023-08-01,Clothing,Dress,9,255.19,1906.27,West,Corporate,0.17,0
+ORD-0229,2023-08-23,Clothing,Jeans,1,141.05,114.25,Central,Home Office,0.19,0
+ORD-0230,2023-01-22,Books,Python Guide,5,388.68,1379.81,West,Home Office,0.29,0
+ORD-0231,2023-08-13,Clothing,Jeans,1,227.62,200.31,North,Consumer,0.12,0
+ORD-0232,2023-01-31,Books,Cookbook,3,309.99,678.88,Central,Corporate,0.27,0
+ORD-0233,2023-12-14,Home & Garden,Lamp,10,137.33,961.31,North,Consumer,0.3,0
+ORD-0234,2023-12-13,Home & Garden,Table,3,128.59,289.33,West,Corporate,0.25,0
+ORD-0235,2023-09-21,Sports,Bike Helmet,2,318.65,439.74,East,Home Office,0.31,0
+ORD-0236,2023-08-23,Home & Garden,Plant,1,435.11,304.58,East,Consumer,0.3,0
+ORD-0237,2023-03-08,Clothing,Dress,5,164.82,741.69,Central,Corporate,0.1,0
+ORD-0238,2023-08-22,Electronics,Laptop,8,13.06,70.0,North,Corporate,0.33,0
+ORD-0239,2023-12-07,Home & Garden,Table,5,51.2,222.72,South,Consumer,0.13,0
+ORD-0240,2023-03-09,Clothing,Dress,,353.33,706.66,Central,Consumer,0.0,0
+ORD-0241,2023-02-15,Home & Garden,Chair,7,348.55,2025.08,North,Consumer,0.17,0
+ORD-0242,2023-08-14,Clothing,Jacket,2,267.6,535.2,East,Home Office,0.0,0
+ORD-0243,2023-10-29,Books,Cookbook,4,47.91,183.97,West,Corporate,0.04,0
+ORD-0244,2023-12-20,Home & Garden,Chair,4,278.93,881.42,North,Home Office,0.21,0
+ORD-0245,2023-05-03,Clothing,Dress,5,324.85,1185.7,West,Corporate,0.27,1
+ORD-0246,2023-10-19,Books,Python Guide,6,467.29,2663.55,West,Corporate,0.05,0
+ORD-0247,2023-01-31,Electronics,Laptop,10,38.43,349.71,West,Home Office,0.09,0
+ORD-0248,2023-02-12,Sports,Bike Helmet,2,322.07,521.75,East,Consumer,0.19,0
+ORD-0249,2023-11-26,Books,Novel,7,295.29,1508.93,North,Corporate,0.27,0
+ORD-0250,2023-01-29,Electronics,Phone,2,462.69,888.36,East,Home Office,0.04,0
+ORD-0251,2023-05-13,Clothing,T-Shirt,3,250.72,661.9,South,Corporate,0.12,0
+ORD-0252,2023-12-31,Electronics,Laptop,6,404.52,2184.41,Central,Home Office,0.1,1
+ORD-0253,2023-10-21,Sports,Shoes,3,187.01,,North,Consumer,0.09,0
+ORD-0254,2023-01-19,Electronics,Phone,1,238.52,207.51,Central,Home Office,0.13,0
+ORD-0255,2023-12-11,Sports,Tennis Racket,,413.87,1655.48,North,Consumer,0.2,0
+ORD-0256,2023-02-14,Sports,Yoga Mat,8,433.69,2532.75,Central,Corporate,0.27,1
+ORD-0257,2023-04-11,Home & Garden,Plant,,234.64,741.46,Central,Consumer,0.21,0
+ORD-0258,2023-06-07,Books,Novel,1,475.74,475.74,North,Consumer,0.0,0
+ORD-0259,2023-09-24,Electronics,Phone,5,51.05,173.57,West,Home Office,0.32,0
+ORD-0260,2023-10-18,Books,Python Guide,9,71.09,454.27,North,Corporate,0.29,0
+ORD-0261,2023-04-14,Home & Garden,Rug,6,162.44,877.18,South,Home Office,0.1,1
+ORD-0262,2023-06-07,Home & Garden,Rug,2,270.28,356.77,West,Corporate,0.34,0
+ORD-0263,2023-12-31,Home & Garden,Plant,1,111.44,,South,Corporate,0.3,0
+ORD-0264,2023-02-18,Clothing,T-Shirt,,428.03,2426.93,West,Consumer,0.19,0
+ORD-0265,2023-11-27,Clothing,Jacket,4,412.72,1436.27,North,Home Office,0.13,0
+ORD-0266,2023-06-19,Electronics,Phone,8,405.6,3147.46,North,Consumer,0.03,0
+ORD-0267,2023-04-20,Sports,Bike Helmet,,19.59,119.11,South,Corporate,0.24,0
+ORD-0268,2023-09-03,Books,History,4,325.4,1080.33,North,Consumer,0.17,0
+ORD-0269,2023-07-03,Books,Data Science,9,398.45,2330.93,West,Home Office,0.35,0
+ORD-0270,2023-05-24,Home & Garden,Rug,5,94.01,418.34,North,Corporate,0.11,0
+ORD-0271,2023-01-29,Clothing,T-Shirt,4,330.15,1201.75,South,Home Office,0.09,0
+ORD-0272,2023-10-30,Clothing,Jacket,4,298.3,859.1,North,Home Office,0.28,0
+ORD-0273,2023-01-29,Books,Data Science,,273.35,2055.59,South,Home Office,0.06,0
+ORD-0274,2023-06-15,Books,Data Science,3,173.68,489.78,North,Consumer,0.06,0
+ORD-0275,2023-07-22,Electronics,Monitor,6,480.48,2508.11,Central,Consumer,0.13,0
+ORD-0276,2023-11-11,Sports,Bike Helmet,6,91.23,361.27,East,Consumer,0.34,0
+ORD-0277,2023-07-20,Home & Garden,Table,3,365.77,735.2,Central,Consumer,0.33,0
+ORD-0278,2023-02-09,Books,Data Science,10,56.53,469.2,South,Corporate,0.17,0
+ORD-0279,2023-06-29,Electronics,Tablet,8,10.64,,East,Consumer,0.07,0
+ORD-0280,2023-02-21,Sports,Dumbbell,7,249.08,1516.9,West,Home Office,0.13,0
+ORD-0281,2023-06-25,Electronics,Laptop,5,14.94,67.98,South,Corporate,0.09,0
+ORD-0282,2023-08-09,Electronics,Tablet,10,492.71,3399.7,South,Home Office,0.31,0
+ORD-0283,2023-05-16,Clothing,Jacket,7,350.11,,East,Corporate,0.25,0
+ORD-0284,2023-12-05,Sports,Dumbbell,1,183.61,,Central,Corporate,0.15,0
+ORD-0285,2023-09-08,Home & Garden,Chair,8,422.67,3009.41,East,Consumer,0.11,0
+ORD-0286,2023-04-26,Sports,Tennis Racket,3,225.66,616.05,East,Home Office,0.09,1
+ORD-0287,2023-02-01,Electronics,Tablet,9,209.92,1398.07,West,Home Office,0.26,0
+ORD-0288,2023-01-18,Sports,Shoes,4,240.75,934.11,Central,Home Office,0.03,0
+ORD-0289,2023-03-27,Books,Data Science,2,474.88,797.8,South,Consumer,0.16,0
+ORD-0290,2023-02-04,Sports,Dumbbell,3,417.88,1140.81,North,Corporate,0.09,0
+ORD-0291,2023-08-03,Books,Cookbook,1,394.34,307.59,North,Corporate,0.22,0
+ORD-0292,2023-06-26,Electronics,Laptop,10,390.87,2814.26,West,Corporate,0.28,0
+ORD-0293,2023-07-25,Electronics,Phone,5,204.47,797.43,North,Corporate,0.22,0
+ORD-0294,2023-05-24,Sports,Tennis Racket,6,15.02,63.99,West,Home Office,0.29,0
+ORD-0295,2023-04-07,Home & Garden,Rug,6,138.36,705.64,West,Consumer,0.15,0
+ORD-0296,2023-09-17,Books,Novel,1,260.06,244.46,West,Consumer,0.06,0
+ORD-0297,2023-07-04,Clothing,Jacket,4,419.3,1526.25,South,Corporate,0.09,0
+ORD-0298,2023-08-31,Electronics,Laptop,4,189.37,598.41,Central,Home Office,0.21,0
+ORD-0299,2023-04-20,Electronics,Tablet,1,196.35,184.57,South,Home Office,0.06,0
+ORD-0300,2023-01-05,Books,Python Guide,1,239.68,227.7,South,Corporate,0.05,0
+ORD-0301,2023-06-04,Home & Garden,Rug,7,426.54,2508.06,Central,Home Office,0.16,0
+ORD-0302,2023-02-02,Home & Garden,Plant,10,306.48,2758.32,East,Corporate,0.1,0
+ORD-0303,2023-11-04,Home & Garden,Table,,261.06,720.53,West,Home Office,0.08,0
+ORD-0304,2023-10-26,Sports,Tennis Racket,5,453.92,1951.86,Central,Consumer,0.14,0
+ORD-0305,2023-10-13,Sports,Tennis Racket,9,153.6,1299.46,South,Corporate,0.06,1
+ORD-0306,2023-06-07,Books,Data Science,6,328.95,1815.8,West,Corporate,0.08,0
+ORD-0307,2023-02-06,Electronics,Headphones,1,433.86,347.09,West,Consumer,0.2,0
+ORD-0308,2023-06-25,Home & Garden,Rug,1,436.07,414.27,West,Home Office,0.05,0
+ORD-0309,2023-01-30,Clothing,T-Shirt,8,169.65,882.18,North,Corporate,0.35,0
+ORD-0310,2023-08-08,Clothing,Dress,2,69.06,117.4,West,Corporate,0.15,1
+ORD-0311,2023-05-08,Electronics,Tablet,9,99.34,679.49,South,Home Office,0.24,0
+ORD-0312,2023-05-29,Books,History,5,87.67,311.23,West,Home Office,0.29,0
+ORD-0313,2023-07-26,Clothing,Jeans,8,182.83,1360.26,North,Consumer,0.07,0
+ORD-0314,2023-01-20,Electronics,Monitor,,88.65,694.13,West,Home Office,0.13,0
+ORD-0315,2023-03-05,Electronics,Laptop,1,28.88,27.72,Central,Corporate,0.04,0
+ORD-0316,2023-11-07,Electronics,Tablet,7,332.52,1792.28,South,Corporate,0.23,0
+ORD-0317,2023-05-15,Electronics,Tablet,2,393.46,653.14,Central,Consumer,0.17,0
+ORD-0318,2023-01-07,Books,Cookbook,4,345.66,1147.59,North,Consumer,0.17,0
+ORD-0319,2023-04-29,Electronics,Monitor,2,363.16,697.27,West,Corporate,0.04,0
+ORD-0320,2023-02-18,Electronics,Tablet,6,401.79,2145.56,North,Consumer,0.11,0
+ORD-0321,2023-06-25,Home & Garden,Rug,10,137.81,1019.79,South,Consumer,0.26,0
+ORD-0322,2023-12-23,Sports,Bike Helmet,7,326.18,1643.95,North,Consumer,0.28,1
+ORD-0323,2023-12-17,Books,Cookbook,3,307.6,673.64,South,Corporate,0.27,0
+ORD-0324,2023-09-26,Electronics,Laptop,5,329.21,1646.05,Central,Home Office,0.0,0
+ORD-0325,2023-05-08,Home & Garden,Plant,9,345.68,2426.67,West,Corporate,0.22,0
+ORD-0326,2023-08-29,Books,History,1,10.76,7.21,West,Consumer,0.33,1
+ORD-0327,2023-05-01,Home & Garden,Chair,9,115.24,798.61,North,Corporate,0.23,0
+ORD-0328,2023-02-22,Sports,Bike Helmet,6,63.76,317.52,West,Corporate,0.17,1
+ORD-0329,2023-08-22,Books,History,5,445.6,1782.4,East,Corporate,0.2,0
+ORD-0330,2023-08-20,Home & Garden,Plant,10,301.98,2264.85,North,Consumer,0.25,0
+ORD-0331,2023-09-10,Home & Garden,Plant,9,190.08,1642.29,South,Home Office,0.04,0
+ORD-0332,2023-04-08,Clothing,Jacket,2,465.46,,East,Consumer,0.14,0
+ORD-0333,2023-09-13,Books,Python Guide,8,231.41,1462.51,North,Home Office,0.21,0
+ORD-0334,2023-03-30,Books,Cookbook,9,391.64,2396.84,South,Consumer,0.32,0
+ORD-0335,2023-05-21,Books,Cookbook,7,489.85,2331.69,West,Corporate,0.32,0
+ORD-0336,2023-12-31,Sports,Shoes,9,152.96,1032.48,Central,Home Office,0.25,0
+ORD-0337,2023-03-01,Home & Garden,Table,3,254.43,580.1,East,Home Office,0.24,0
+ORD-0338,2023-07-15,Sports,Shoes,5,439.35,16329.56,South,Consumer,0.15,0
+ORD-0339,2023-04-15,Clothing,Jeans,5,77.48,379.65,Central,Consumer,0.02,0
+ORD-0340,2023-12-23,Books,Data Science,9,197.5,1457.55,East,Home Office,0.18,0
+ORD-0341,2023-08-15,Home & Garden,Plant,1,11.42,10.39,South,Home Office,0.09,0
+ORD-0342,2023-04-01,Books,History,4,389.19,1027.46,North,Consumer,0.34,0
+ORD-0343,2023-05-11,Electronics,Headphones,,280.52,1332.47,North,Corporate,0.05,0
+ORD-0344,2023-06-04,Home & Garden,Plant,1,387.96,302.61,West,Home Office,0.22,0
+ORD-0345,2023-10-06,Books,Data Science,3,262.7,567.43,Central,Corporate,0.28,1
+ORD-0346,2023-09-01,Home & Garden,Lamp,6,150.32,604.29,Central,Home Office,0.33,1
+ORD-0347,2023-02-28,Books,History,4,479.65,1458.14,West,Corporate,0.24,0
+ORD-0348,2023-04-09,Home & Garden,Plant,9,225.55,1989.35,East,Home Office,0.02,1
+ORD-0349,2023-04-20,Books,History,1,315.33,293.26,West,Consumer,0.07,0
+ORD-0350,2023-02-07,Sports,Yoga Mat,3,16.76,37.71,North,Consumer,0.25,0
+ORD-0351,2023-01-09,Clothing,Jeans,7,197.08,,West,Home Office,0.22,1
+ORD-0352,2023-02-24,Electronics,Monitor,1,351.94,341.38,East,Home Office,0.03,0
+ORD-0353,2023-04-23,Sports,Bike Helmet,7,411.95,2854.81,South,Home Office,0.01,0
+ORD-0354,2023-03-14,Clothing,Jeans,6,478.91,2873.46,North,Consumer,0.0,1
+ORD-0355,2023-07-31,Electronics,Tablet,4,375.41,1021.12,Central,Consumer,0.32,0
+ORD-0356,2023-10-09,Clothing,T-Shirt,3,337.13,809.11,West,Home Office,0.2,0
+ORD-0357,2023-12-02,Electronics,Phone,10,246.16,2166.21,South,Consumer,0.12,0
+ORD-0358,2023-10-17,Sports,Bike Helmet,6,310.09,1655.88,Central,Corporate,0.11,0
+ORD-0359,2023-07-04,Home & Garden,Table,4,357.54,1115.52,South,Home Office,0.22,0
+ORD-0360,2023-05-24,Home & Garden,Lamp,8,278.08,2091.16,South,Home Office,0.06,0
+ORD-0361,2023-10-30,Electronics,Laptop,9,317.66,2058.44,South,Consumer,0.28,0
+ORD-0362,2023-05-29,Sports,Dumbbell,6,199.29,825.06,South,Corporate,0.31,0
+ORD-0363,2023-03-23,Electronics,Phone,10,343.66,2508.72,South,Home Office,0.27,0
+ORD-0364,2023-07-09,Sports,Tennis Racket,1,113.32,94.06,South,Consumer,0.17,0
+ORD-0365,2023-02-22,Sports,Bike Helmet,8,441.37,3495.65,Central,Home Office,0.01,0
+ORD-0366,2023-02-09,Books,History,3,191.45,499.68,Central,Corporate,0.13,0
+ORD-0367,2023-08-14,Home & Garden,Lamp,8,397.37,31090.91,South,Consumer,0.31,1
+ORD-0368,2023-08-01,Clothing,Jacket,6,303.0,1290.78,East,Home Office,0.29,1
+ORD-0369,2023-03-24,Books,Data Science,7,16.11,110.51,South,Home Office,0.02,0
+ORD-0370,2023-11-23,Clothing,Jeans,3,260.74,672.71,North,Home Office,0.14,0
+ORD-0371,2023-07-30,Clothing,Dress,10,496.42,3474.94,Central,Consumer,0.3,0
+ORD-0372,2023-10-30,Books,Novel,,363.47,959.56,North,Consumer,0.12,0
+ORD-0373,2023-11-11,Books,History,7,414.12,2290.08,Central,Consumer,0.21,0
+ORD-0374,2023-12-14,Electronics,Headphones,3,451.48,15978.32,West,Home Office,0.19,0
+ORD-0375,2023-12-23,Sports,Dumbbell,8,395.83,2754.98,Central,Consumer,0.13,0
+ORD-0376,2023-12-30,Electronics,Tablet,10,439.0,3775.4,North,Home Office,0.14,0
+ORD-0377,2023-05-10,Clothing,Jeans,7,184.32,1225.73,East,Home Office,0.05,0
+ORD-0378,2023-10-14,Sports,Dumbbell,7,278.29,1558.42,Central,Corporate,0.2,0
+ORD-0379,2023-03-24,Sports,Dumbbell,2,375.17,630.29,North,Consumer,0.16,0
+ORD-0380,2023-03-16,Books,Python Guide,3,197.61,462.41,West,Home Office,0.22,0
+ORD-0381,2023-12-02,Electronics,Monitor,1,363.62,243.63,Central,Corporate,0.33,0
+ORD-0382,2023-09-23,Clothing,Dress,8,10.3,57.68,East,Consumer,0.3,1
+ORD-0383,2023-03-22,Clothing,Shoes,3,338.64,883.85,North,Corporate,0.13,0
+ORD-0384,2023-10-09,Books,Data Science,9,12.61,85.12,East,Home Office,0.25,0
+ORD-0385,2023-01-03,Home & Garden,Table,10,481.71,4046.36,East,Consumer,0.16,0
+ORD-0386,2023-10-22,Home & Garden,Lamp,2,402.46,539.3,East,Home Office,0.33,0
+ORD-0387,2023-09-04,Clothing,Jeans,8,342.39,1889.99,North,Corporate,0.31,1
+ORD-0388,2023-05-08,Clothing,Jeans,7,477.95,37928.58,East,Consumer,0.18,0
+ORD-0389,2023-04-04,Books,Data Science,8,160.37,1180.32,South,Corporate,0.08,0
+ORD-0390,2023-03-21,Home & Garden,Table,4,105.37,383.55,North,Consumer,0.09,0
+ORD-0391,2023-06-11,Books,Python Guide,9,479.21,3019.02,West,Home Office,0.3,0
+ORD-0392,2023-08-05,Books,Novel,7,114.94,643.66,West,Home Office,0.2,1
+ORD-0393,2023-01-07,Clothing,Dress,2,350.63,589.06,South,Corporate,0.16,0
+ORD-0394,2023-06-25,Home & Garden,Table,9,135.11,1106.55,East,Consumer,0.09,0
+ORD-0395,2023-10-22,Home & Garden,Lamp,7,143.42,943.7,South,Consumer,0.06,0
+ORD-0396,2023-01-05,Sports,Dumbbell,3,401.02,890.26,South,Corporate,0.26,0
+ORD-0397,2023-10-18,Books,History,6,393.74,2102.57,North,Corporate,0.11,1
+ORD-0398,2023-10-14,Home & Garden,Rug,2,227.68,400.72,Central,Corporate,0.12,0
+ORD-0399,2023-05-26,Books,Data Science,10,290.07,2233.54,East,Corporate,0.23,0
+ORD-0400,2023-03-27,Electronics,Headphones,10,146.83,1145.27,East,Corporate,0.22,0
+ORD-0401,2023-12-30,Electronics,Laptop,3,175.09,467.49,East,Home Office,0.11,0
+ORD-0402,2023-01-12,Home & Garden,Plant,9,482.94,3737.96,South,Home Office,0.14,0
+ORD-0403,2023-08-31,Electronics,Phone,3,201.54,586.48,Central,Consumer,0.03,1
+ORD-0404,2023-07-19,Electronics,Laptop,5,310.96,1508.16,East,Consumer,0.03,0
+ORD-0405,2023-06-16,Clothing,Shoes,3,19.14,44.21,West,Corporate,0.23,0
+ORD-0406,2023-11-22,Sports,Dumbbell,9,92.63,658.6,Central,Corporate,0.21,0
+ORD-0407,2023-07-31,Home & Garden,Rug,9,117.43,,East,Consumer,0.03,0
+ORD-0408,2023-09-02,Clothing,Jeans,5,237.25,1186.25,East,Consumer,0.0,0
+ORD-0409,2023-05-08,Electronics,Monitor,6,98.34,407.13,South,Home Office,0.31,0
+ORD-0410,2023-11-10,Home & Garden,Chair,7,314.53,1805.4,East,Corporate,0.18,0
+ORD-0411,2023-08-20,Clothing,T-Shirt,,72.63,209.17,East,Home Office,0.04,0
+ORD-0412,2023-08-13,Electronics,Monitor,1,97.04,,North,Consumer,0.04,1
+ORD-0413,2023-06-19,Sports,Tennis Racket,8,498.99,3353.21,North,Consumer,0.16,1
+ORD-0414,2023-01-07,Sports,Dumbbell,4,448.37,1632.07,North,Home Office,0.09,0
+ORD-0415,2023-04-17,Electronics,Phone,8,368.98,2863.28,West,Corporate,0.03,0
+ORD-0416,2023-07-04,Electronics,Monitor,9,65.46,488.99,North,Home Office,0.17,0
+ORD-0417,2023-05-05,Home & Garden,Chair,3,398.22,955.73,North,Consumer,0.2,0
+ORD-0418,2023-06-23,Clothing,Jeans,2,128.12,212.68,North,Consumer,0.17,0
+ORD-0419,2023-06-27,Electronics,Phone,8,120.17,634.5,West,Home Office,0.34,0
+ORD-0420,2023-12-23,Clothing,Jeans,1,245.22,208.44,West,Consumer,0.15,0
+ORD-0421,2023-03-21,Sports,Tennis Racket,10,457.66,3707.05,West,Corporate,0.19,0
+ORD-0422,2023-11-14,Books,Cookbook,3,442.05,1034.4,South,Corporate,0.22,0
+ORD-0423,2023-05-25,Sports,Dumbbell,9,343.2,2254.82,East,Corporate,0.27,0
+ORD-0424,2023-04-09,Electronics,Laptop,3,93.43,277.49,North,Consumer,0.01,0
+ORD-0425,2023-02-06,Books,History,10,131.69,1145.7,North,Consumer,0.13,0
+ORD-0426,2023-07-08,Sports,Yoga Mat,6,281.22,,North,Home Office,0.33,0
+ORD-0427,2023-09-30,Home & Garden,Chair,4,480.49,1864.3,West,Consumer,0.03,0
+ORD-0428,2023-07-03,Clothing,Shoes,9,210.52,1818.89,West,Home Office,0.04,0
+ORD-0429,2023-11-04,Clothing,Shoes,7,254.82,1373.48,West,Corporate,0.23,0
+ORD-0430,2023-10-07,Home & Garden,Rug,7,413.95,2578.91,South,Corporate,0.11,0
+ORD-0431,2023-01-09,Sports,Bike Helmet,7,5.1,35.34,Central,Consumer,0.01,0
+ORD-0432,2023-05-22,Clothing,Jacket,6,15.74,67.05,Central,Home Office,0.29,0
+ORD-0433,2023-05-08,Electronics,Headphones,6,82.27,449.19,South,Corporate,0.09,0
+ORD-0434,2023-12-20,Clothing,T-Shirt,6,397.49,2241.84,Central,Consumer,0.06,0
+ORD-0435,2023-08-11,Books,Cookbook,2,391.16,531.98,West,Consumer,0.32,0
+ORD-0436,2023-10-17,Books,Python Guide,7,31.79,182.47,South,Corporate,0.18,0
+ORD-0437,2023-07-21,Sports,Bike Helmet,10,289.75,2810.57,South,Consumer,0.03,0
+ORD-0438,2023-03-08,Books,Cookbook,5,47.11,193.15,South,Corporate,0.18,0
+ORD-0439,2023-05-17,Clothing,Shoes,10,498.55,4088.11,West,Corporate,0.18,0
+ORD-0440,2023-01-13,Sports,Bike Helmet,6,177.41,947.37,East,Consumer,0.11,0
+ORD-0441,2023-12-17,Sports,Shoes,3,223.03,454.98,East,Consumer,0.32,0
+ORD-0442,2023-01-08,Electronics,Phone,10,463.73,3246.11,East,Home Office,0.3,0
+ORD-0443,2023-10-08,Home & Garden,Table,9,109.88,801.03,West,Home Office,0.19,0
+ORD-0444,2023-01-31,Electronics,Headphones,10,453.49,3718.62,East,Consumer,0.18,0
+ORD-0445,2023-07-04,Electronics,Laptop,7,331.88,1788.83,North,Consumer,0.23,0
+ORD-0446,2023-02-15,Sports,Shoes,2,452.42,751.02,South,Consumer,0.17,0
+ORD-0447,2023-03-22,Electronics,Laptop,4,461.52,1643.01,North,Corporate,0.11,0
+ORD-0448,2023-01-16,Books,Novel,1,314.77,217.19,Central,Corporate,0.31,0
+ORD-0449,2023-12-18,Clothing,T-Shirt,7,262.76,1397.88,South,Corporate,0.24,0
+ORD-0450,2023-10-05,Books,Novel,8,273.41,2034.17,South,Consumer,0.07,0
+ORD-0451,2023-02-04,Clothing,Dress,3,329.83,791.59,Central,Home Office,0.2,0
+ORD-0452,2023-08-15,Clothing,T-Shirt,6,440.67,2273.86,East,Consumer,0.14,0
+ORD-0453,2023-04-29,Books,History,5,304.77,1203.84,North,Corporate,0.21,1
+ORD-0454,2023-03-25,Books,Cookbook,,96.07,495.72,South,Consumer,0.14,1
+ORD-0455,2023-02-03,Home & Garden,Rug,4,372.47,968.42,South,Corporate,0.35,0
+ORD-0456,2023-07-14,Sports,Dumbbell,7,205.41,1423.49,East,Corporate,0.01,0
+ORD-0457,2023-05-06,Books,Python Guide,9,59.11,446.87,Central,Home Office,0.16,0
+ORD-0458,2023-05-27,Books,Python Guide,4,149.13,513.01,West,Consumer,0.14,0
+ORD-0459,2023-02-27,Books,Data Science,8,415.8,2794.18,South,Home Office,0.16,0
+ORD-0460,2023-04-14,Sports,Tennis Racket,8,17.33,116.46,West,Consumer,0.16,0
+ORD-0461,2023-09-26,Clothing,T-Shirt,2,61.51,103.34,West,Home Office,0.16,0
+ORD-0462,2023-12-04,Sports,Shoes,7,26.73,175.88,South,Consumer,0.06,0
+ORD-0463,2023-04-03,Sports,Tennis Racket,5,366.43,,North,Consumer,0.34,0
+ORD-0464,2023-05-02,Electronics,Headphones,8,428.43,39363.94,South,Home Office,0.19,0
+ORD-0465,2023-10-13,Books,History,1,126.13,102.17,South,Consumer,0.19,0
+ORD-0466,2023-01-26,Clothing,T-Shirt,10,419.82,3778.38,North,Corporate,0.1,0
+ORD-0467,2023-01-19,Books,History,9,92.82,701.72,North,Corporate,0.16,0
+ORD-0468,2023-05-21,Sports,Shoes,2,149.95,284.9,East,Home Office,0.05,0
+ORD-0469,2023-09-05,Electronics,Laptop,10,366.22,2856.52,Central,Home Office,0.22,0
+ORD-0470,2023-09-24,Books,History,10,180.16,1711.52,West,Corporate,0.05,0
+ORD-0471,2023-04-17,Home & Garden,Table,1,63.51,53.35,Central,Corporate,0.16,0
+ORD-0472,2023-06-03,Clothing,T-Shirt,4,346.56,,Central,Home Office,0.09,0
+ORD-0473,2023-06-19,Home & Garden,Rug,,309.92,3068.21,East,Home Office,0.01,0
+ORD-0474,2023-06-21,Clothing,Dress,3,315.46,653.0,West,Corporate,0.31,0
+ORD-0475,2023-07-01,Books,Novel,9,270.26,,North,Consumer,0.07,0
+ORD-0476,2023-06-07,Books,Data Science,10,304.82,2834.83,East,Home Office,0.07,1
+ORD-0477,2023-03-31,Clothing,Jeans,8,415.58,2958.93,North,Corporate,0.11,0
+ORD-0478,2023-06-24,Sports,Shoes,1,400.52,272.35,West,Home Office,0.32,0
+ORD-0479,2023-09-25,Electronics,Monitor,3,106.57,,North,Consumer,0.01,0
+ORD-0480,2023-06-09,Electronics,Tablet,8,445.15,3418.75,North,Home Office,0.04,0
+ORD-0481,2023-03-02,Clothing,Jacket,5,141.94,631.63,East,Consumer,0.11,0
+ORD-0482,2023-03-14,Books,History,2,107.26,188.78,East,Home Office,0.12,0
+ORD-0483,2023-01-26,Home & Garden,Plant,8,30.11,238.47,North,Corporate,0.01,1
+ORD-0484,2023-12-10,Books,History,8,310.08,2207.77,Central,Consumer,0.11,0
+ORD-0485,2023-08-27,Clothing,T-Shirt,8,53.15,378.43,West,Consumer,0.11,0
+ORD-0486,2023-06-16,Home & Garden,Lamp,7,95.76,455.82,West,Corporate,0.32,1
+ORD-0487,2023-02-22,Sports,Dumbbell,5,385.13,1521.26,West,Home Office,0.21,0
+ORD-0488,2023-10-08,Home & Garden,Plant,8,203.4,1399.39,South,Corporate,0.14,0
+ORD-0489,2023-03-30,Books,Cookbook,7,285.77,1760.34,North,Home Office,0.12,0
+ORD-0490,2023-06-07,Books,History,8,166.06,1288.63,West,Consumer,0.03,0
+ORD-0491,2023-03-13,Sports,Tennis Racket,8,324.27,2542.28,Central,Home Office,0.02,0
+ORD-0492,2023-12-15,Sports,Shoes,5,198.04,792.16,East,Corporate,0.2,0
+ORD-0493,2023-03-07,Sports,Tennis Racket,2,293.45,463.65,East,Consumer,0.21,0
+ORD-0494,2023-12-26,Books,Novel,2,431.32,603.85,Central,Corporate,0.3,0
+ORD-0495,2023-07-16,Sports,Shoes,4,332.93,1105.33,East,Corporate,0.17,0
+ORD-0496,2023-12-03,Clothing,T-Shirt,2,325.95,619.3,West,Consumer,0.05,1
+ORD-0497,2023-08-19,Sports,Shoes,,313.51,1843.44,West,Corporate,0.16,0
+ORD-0498,2023-01-18,Sports,Dumbbell,9,138.28,846.27,North,Home Office,0.32,0
+ORD-0499,2023-08-27,Electronics,Phone,9,491.87,2921.71,Central,Consumer,0.34,0
+ORD-0500,2023-01-06,Electronics,Monitor,10,159.69,1564.96,West,Corporate,0.02,0
