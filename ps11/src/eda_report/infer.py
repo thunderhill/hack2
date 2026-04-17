@@ -16,7 +16,7 @@ def infer_columns(df: pd.DataFrame) -> list[ColumnMeta]:
             if pd.api.types.is_datetime64_any_dtype(series):
                 is_datetime = True
             else:
-                parsed = pd.to_datetime(non_null, errors="coerce", infer_datetime_format=True)
+                parsed = pd.to_datetime(non_null, errors="coerce")
                 if parsed.notna().mean() > 0.8:
                     is_datetime = True
 
