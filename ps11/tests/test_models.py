@@ -1,4 +1,6 @@
 import pytest
+import pandas as pd
+from pydantic import ValidationError
 from eda_report.models import (
     ColumnMeta, OutlierSummary, ColumnProfile,
     DatasetProfile, ExecutiveSummary, GuardrailResult,
@@ -48,7 +50,24 @@ def test_executive_summary_fields():
 
 
 def test_guardrail_result_ok():
-    import pandas as pd
     df = pd.DataFrame({"a": [1, 2, 3]})
     r = GuardrailResult(ok=True, errors=[], warnings=[], truncated=False, df=df)
     assert r.ok
+
+
+def test_column_meta_rejects_invalid_dtype():
+    with pytest.raises(ValidationError):
+        ColumnMeta(
+            name="x", dtype="unknown_type",
+            is_id=False, is_target=False, is_datetime=False,
+            role="measure", null_pct=0.0,
+        )
+
+
+def test_column_meta_rejects_invalid_role():
+    with pytest.raises(ValidationError):
+        ColumnMeta(
+            name="x", dtype="numeric",
+            is_id=False, is_target=False, is_datetime=False,
+            role="unknown_role", null_pct=0.0,
+        )

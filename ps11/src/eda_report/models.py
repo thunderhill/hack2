@@ -60,6 +60,6 @@ class GuardrailResult(BaseModel):
     errors: list[str]
     warnings: list[str]
     truncated: bool
-    df: object  # pd.DataFrame — excluded from serialization
+    df: pd.DataFrame
 
     model_config = {"arbitrary_types_allowed": True}
