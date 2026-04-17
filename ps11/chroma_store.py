@@ -8,7 +8,7 @@ class ChromaStore:
     def __init__(self) -> None:
         mode = os.environ.get("CHROMA_MODE", "memory")
         if mode == "memory":
-            self._client = chromadb.Client()
+            self._client = chromadb.EphemeralClient()
         else:
             persist_dir = os.environ.get("CHROMA_PERSIST_DIR", "./data/chroma")
             self._client = chromadb.PersistentClient(path=persist_dir)

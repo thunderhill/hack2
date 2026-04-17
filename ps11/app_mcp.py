@@ -92,7 +92,11 @@ for key, default in [
     if key not in st.session_state:
         st.session_state[key] = default
 
-_store = ChromaStore()
+try:
+    _store = ChromaStore()
+except Exception as _chroma_err:
+    _store = None
+    st.warning(f"ChromaDB unavailable: {_chroma_err}. Past reports panel disabled.")
 
 DATA_DIR = Path(__file__).parent / "data"
 DEMO_DATASETS = {
@@ -326,15 +330,16 @@ elif section == "AI Insights":
             client = get_llm_client()
             es = get_executive_summary(client, deployment, profile)
             st.session_state["exec_summary"] = es
-            try:
-                _store.store_report(
-                    dataset_name=profile.dataset_name,
-                    row_count=profile.row_count,
-                    col_count=profile.col_count,
-                    summary_json=es.model_dump_json(),
-                )
-            except Exception:
-                pass  # ChromaDB failure should not crash the app
+            if _store is not None:
+                try:
+                    _store.store_report(
+                        dataset_name=profile.dataset_name,
+                        row_count=profile.row_count,
+                        col_count=profile.col_count,
+                        summary_json=es.model_dump_json(),
+                    )
+                except Exception:
+                    pass  # ChromaDB failure should not crash the app
 
     es = st.session_state["exec_summary"]
     score = es.data_quality_score
@@ -363,7 +368,7 @@ elif section == "AI Insights":
 
     st.markdown("#### Similar Past Reports")
     query = f"{profile.dataset_name} {profile.row_count} rows {profile.col_count} columns"
-    past = _store.search_similar(query, n=3)
+    past = _store.search_similar(query, n=3) if _store is not None else []
     if past:
         for item in past:
             meta = item["meta"]
