@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 from eda_report.models import ColumnMeta
 
@@ -16,7 +17,9 @@ def infer_columns(df: pd.DataFrame) -> list[ColumnMeta]:
             if pd.api.types.is_datetime64_any_dtype(series):
                 is_datetime = True
             else:
-                parsed = pd.to_datetime(non_null, errors="coerce")
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", UserWarning)
+                    parsed = pd.to_datetime(non_null, errors="coerce")
                 if parsed.notna().mean() > 0.8:
                     is_datetime = True
 
