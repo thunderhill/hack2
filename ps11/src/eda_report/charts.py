@@ -73,7 +73,11 @@ def histogram(df: pd.DataFrame, col: str) -> go.Figure:
 
 def value_counts_bar(cp: ColumnProfile) -> go.Figure:
     if not cp.top_5_values:
-        return go.Figure()
+        fig = go.Figure()
+        fig.add_annotation(text="No categorical data", x=0.5, y=0.5,
+                           xref="paper", yref="paper", showarrow=False,
+                           font=dict(color="#e0e0ff", size=14))
+        return _apply_theme(fig, f"Top Values: {cp.meta.name}")
     labels = list(cp.top_5_values.keys())
     values = list(cp.top_5_values.values())
     fig = go.Figure(go.Bar(

@@ -35,7 +35,7 @@ def get_section_narrative(
         "dataset": profile.dataset_name,
         "rows": profile.row_count,
         "section": section,
-        "columns": [c.model_dump(exclude_none=True) for c in profile.columns][:20],
+        "columns": [c.model_dump(exclude_none=True) for c in profile.columns][:20],  # cap at 20 cols to stay within token budget
     }
     user_content = sanitize_for_proxy(json.dumps(section_data))
     try:

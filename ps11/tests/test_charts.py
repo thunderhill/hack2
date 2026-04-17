@@ -56,3 +56,12 @@ def test_time_series_line_returns_figure():
     })
     fig = charts.time_series_line(df, "order_date", "revenue")
     assert isinstance(fig, go.Figure)
+
+def test_scatter_pair_returns_figure():
+    df = pd.DataFrame({"price": [10, 20, 30, 40, 50], "revenue": [100, 200, 300, 400, 500]})
+    fig = charts.scatter_pair(df, "price", "revenue")
+    assert isinstance(fig, go.Figure)
+
+def test_outlier_pct_bar_returns_figure():
+    fig = charts.outlier_pct_bar(_make_profile())
+    assert isinstance(fig, go.Figure)
