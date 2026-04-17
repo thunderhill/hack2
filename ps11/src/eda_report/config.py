@@ -1,4 +1,5 @@
 import os
+import re
 import httpx
 from functools import lru_cache
 from openai import OpenAI
@@ -26,14 +27,23 @@ _SENSITIVE: dict[str, str] = {
 }
 
 def sanitize_for_proxy(text: str) -> str:
+    """Replace content-filter trigger words before sending to genailab.tcs.in."""
     for word, replacement in _SENSITIVE.items():
-        text = text.replace(word, replacement)
-        text = text.replace(word.capitalize(), replacement.capitalize())
-        text = text.replace(word.upper(), replacement.upper())
+        pattern = re.compile(rf"\b{re.escape(word)}\b", re.IGNORECASE)
+        def _replace(m: re.Match, _r: str = replacement) -> str:
+            w = m.group(0)
+            if w.isupper():
+                return _r.upper()
+            if w[0].isupper():
+                return _r.capitalize()
+            return _r
+        text = pattern.sub(_replace, text)
     return text
 
 def get_model(model_key: str) -> str:
-    return MODEL_DISPLAY_MAP.get(model_key, MODEL_DISPLAY_MAP["gpt-4o-mini"])
+    if model_key not in MODEL_DISPLAY_MAP:
+        raise ValueError(f"Unknown model {model_key!r}. Options: {MODEL_OPTIONS}")
+    return MODEL_DISPLAY_MAP[model_key]
 
 @lru_cache(maxsize=1)
 def _cached_client(api_key: str, base_url: str) -> OpenAI:
